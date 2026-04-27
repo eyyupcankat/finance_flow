@@ -1,19 +1,23 @@
 # Active Context
 
 ## Current Work Focus
-- Initializing the project's foundational Memory Bank files based on the System Architect's briefing.
-- Awaiting the first Google Stitch UI screenshot to commence frontend React development.
+- Architecture is fully finalized. Awaiting the first Google Stitch UI screenshot to commence frontend React development.
 
 ## Recent Changes
-- Created `memory-bank` directory.
-- Generated core Memory Bank files (`projectbrief.md`, `productContext.md`, `systemPatterns.md`, `techContext.md`, `progress.md`, `activeContext.md`).
+- Finalized all core architectural decisions with the System Architect.
+- Updated `projectbrief.md` with auth flow, card management, subscription persistence, cancel feature, test card numbers, and folder structure.
+- Rebuilt `progress.md` with a detailed 4-phase full-stack roadmap.
+
+## Finalized Decisions (Locked)
+- **Auth**: Mandatory login/register via Email/Password + Google OAuth + GitHub OAuth.
+- **Cards**: Persisted per user in DB, deletable via UI.
+- **Subscriptions**: Saved to PostgreSQL after detection, cancellable via "Cancel Subscription" button.
+- **Mock Bank Test Cards**: 4 scenarios defined (`4111...`, `4222...`, `4333...`, `9999...`).
+- **Folder Layout**: `/frontend`, `/backend-core`, `/mock-bank-api`.
+- **Ports**: Frontend → 5173, Backend-core → 8080, Mock Bank API → 8081.
 
 ## Next Steps
-1. Receive the initial UI screenshot (SS) from the System Architect.
-2. Analyze the visual design layout, colors, and components.
-3. Initialize the React frontend project.
-4. Implement the UI using React and TailwindCSS strictly matching the screenshot.
-
-## Active Decisions and Considerations
-- **No Code Yet Rule**: Adhering strictly to the instruction to write ZERO React or Spring Boot code until the UI screenshots are provided.
-- **Documentation Priority**: Ensuring the `progress.md` reflects a comprehensive, professional full-stack roadmap that covers security, routing, database mapping, and the critical Mock API separation.
+1. Receive Google Stitch UI screenshots from the System Architect.
+2. Analyze each screen's layout, typography, color palette, and component structure.
+3. Initialize `/frontend` (Vite + React + TailwindCSS).
+4. Build pages and components strictly matching the screenshots.
