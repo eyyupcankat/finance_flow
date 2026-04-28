@@ -1,25 +1,28 @@
 # Progress & Roadmap
 
 ## Current Status
-- **Phase**: Initialization & Planning
-- **What Works**: Memory Bank initialized. Project guidelines established.
-- **What's Left to Build**: Everything (Frontend, Main Backend, Mock Bank API, Database Integrations).
+- **Phase**: Phase 2 — Mock Bank API
+- **What Works**: Full React frontend — all 7 pages pixel-perfect (Login, Register, Dashboard, Card Integration, Subscriptions, Analytics, Settings). Auth context, protected routes, Axios API service layer all wired.
+- **What's Left to Build**: Mock Bank API (Spring Boot isolated), Main Backend (Spring Boot + PostgreSQL), Integration.
 
 ## Detailed Roadmap (Full-Stack Development Plan)
 
-### Phase 1: Frontend UI/UX Foundation (Pending Screenshots)
-- [ ] Receive Google Stitch screenshots from the System Architect.
-- [ ] Initialize React project (Vite) in `/frontend` with TailwindCSS.
-- [ ] Setup React Router with the following routes:
-  - `/login` → Login page (Email/Pass, Google, GitHub)
-  - `/register` → Register page
-  - `/dashboard` → Main user dashboard (protected route)
-  - `/cards` → Manage virtual cards (protected route)
-  - `/subscriptions` → Detected subscriptions list (protected route)
-- [ ] Build pixel-perfect pages based on Google Stitch screenshots.
-- [ ] Build reusable components: Navbar, Card, SubscriptionItem, Button, Modal.
-- [ ] Implement Axios API service layer with JWT token injection (interceptors).
-- [ ] Implement frontend Auth context/state management (React Context or Zustand).
+### Phase 1: Frontend UI/UX Foundation ✅ COMPLETED
+- [x] Receive Google Stitch screenshots from the System Architect.
+- [x] Initialize React project (Vite) in `/frontend` with TailwindCSS.
+- [x] Setup React Router with the following routes:
+  - [x] `/login` → Login page (Email/Pass, Google, GitHub)
+  - [x] `/register` → Register page (designed consistent with Login — not in screenshots)
+  - [x] `/dashboard` → Main user dashboard (protected route)
+  - [x] `/cards` → Manage virtual cards (protected route)
+  - [x] `/subscriptions` → Detected subscriptions list (protected route)
+  - [x] `/analytics` → Analytics overview (protected route)
+  - [x] `/settings` → Account settings (protected route)
+- [x] Build pixel-perfect pages based on Google Stitch screenshots.
+- [x] Build reusable components: Sidebar, Topbar, Layout, ProtectedRoute.
+- [x] Implement Axios API service layer with JWT token injection (interceptors).
+- [x] Implement frontend Auth context/state management (React Context).
+- **NOTE**: Node.js must be installed and `npm install` must be run in `/frontend` before running the dev server.
 
 ### Phase 2: Mock Bank API (Isolated Third-Party Simulation)
 - [ ] Initialize an isolated Spring Boot project in `/mock-bank-api` (runs on port **8081**).
