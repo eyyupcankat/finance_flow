@@ -1,9 +1,9 @@
 # Progress & Roadmap
 
 ## Current Status
-- **Phase**: Phase 2 — Mock Bank API
-- **What Works**: Full React frontend — all 7 pages pixel-perfect (Login, Register, Dashboard, Card Integration, Subscriptions, Analytics, Settings). Auth context, protected routes, Axios API service layer all wired.
-- **What's Left to Build**: Mock Bank API (Spring Boot isolated), Main Backend (Spring Boot + PostgreSQL), Integration.
+- **Phase**: Phase 3 — Main Backend
+- **What Works**: Full React frontend (7 pages). Mock Bank API fully built — PostgreSQL-backed, seeded test cards, GET transactions + POST cancel endpoints.
+- **What's Left to Build**: Main Backend (Spring Boot + PostgreSQL + JWT + OAuth2), Integration.
 
 ## Detailed Roadmap (Full-Stack Development Plan)
 
@@ -24,16 +24,17 @@
 - [x] Implement frontend Auth context/state management (React Context).
 - **NOTE**: Node.js must be installed and `npm install` must be run in `/frontend` before running the dev server.
 
-### Phase 2: Mock Bank API (Isolated Third-Party Simulation)
-- [ ] Initialize an isolated Spring Boot project in `/mock-bank-api` (runs on port **8081**).
-- [ ] Define hardcoded test card scenarios:
-  - `4111000000000000` → Full dataset, multiple recurring transactions
-  - `4222000000000000` → Transactions with NO recurring items
-  - `4333000000000000` → Minimal, single-transaction dataset
-  - `9999000000000000` → Returns HTTP 404 Card Not Found
-- [ ] Implement `GET /api/v1/bank/cards/{cardNumber}/transactions` endpoint.
-- [ ] Implement `POST /api/v1/bank/cards/{cardNumber}/cancel` endpoint (mock cancellation, returns success).
-- [ ] Ensure the Mock API has no dependency on the main backend — fully self-contained.
+### Phase 2: Mock Bank API (Isolated Third-Party Simulation) ✅ COMPLETED
+- [x] Initialize an isolated Spring Boot project in `/mock-bank-api` (runs on port **8081**).
+- [x] Define hardcoded test card scenarios (seeded via DataInitializer on first startup):
+  - `4111000000000000` → Full dataset, multiple recurring transactions (Netflix, Spotify, Amazon Prime, Adobe CC + one-time purchases)
+  - `4222000000000000` → Transactions with NO recurring items (Starbucks, H&M, Pizza Hut, Shell)
+  - `4333000000000000` → Minimal, single-transaction dataset (one coffee purchase)
+  - `9999000000000000` → Returns HTTP 404 Card Not Found (handled via CardNotFoundException)
+- [x] Implement `GET /api/v1/bank/cards/{cardNumber}/transactions` endpoint.
+- [x] Implement `POST /api/v1/bank/cards/{cardNumber}/cancel` endpoint (persists CancellationRecord, returns success).
+- [x] Ensure the Mock API has no dependency on the main backend — fully self-contained.
+- **NOTE**: Requires PostgreSQL DB named `mockbank`. Copy `.env.example` → `.env` and fill in credentials.
 
 ### Phase 3: Main Backend Architecture & Security
 - [ ] Initialize the Main Spring Boot project in `/backend-core` (runs on port **8080**).
