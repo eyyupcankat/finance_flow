@@ -37,22 +37,25 @@
 - **NOTE**: Requires PostgreSQL DB named `mockbank`. Copy `.env.example` → `.env` and fill in credentials.
 
 ### Phase 3: Main Backend Architecture & Security
-- [ ] Initialize the Main Spring Boot project in `/backend-core` (runs on port **8080**).
-- [ ] Setup PostgreSQL connection and JPA entities:
+- [x] Initialize the Main Spring Boot project in `/backend-core` (runs on port **8080**).
+- [x] Setup PostgreSQL connection and JPA entities:
   - `User` (id, email, name, provider [LOCAL/GOOGLE/GITHUB], providerId, passwordHash, createdAt)
   - `VirtualCard` (id, user_id FK, cardNumber, label, addedAt)
   - `Subscription` (id, user_id FK, card_id FK, name, amount, currency, billingCycle, detectedAt, status [ACTIVE/CANCELLED])
-- [ ] Implement Security configuration:
+- **NOTE**: Copy `.env.example` → `.env` and fill in DB credentials + JWT secret + OAuth2 client IDs before running.
+- [x] Implement Security configuration:
   - CORS policy: allow `http://localhost:5173` (React dev server)
-  - Spring Security filter chain
-  - JWT generation, validation, and refresh logic
+  - Spring Security filter chain (stateless, JWT + OAuth2)
+  - JWT generation, validation, and refresh logic (jjwt 0.12.6)
   - OAuth2 integration for Google and GitHub (Spring Security OAuth2 Client)
-- [ ] Implement `WebClient` HTTP client to call the Mock Bank API at `http://localhost:8081`.
-- [ ] Implement core business logic services:
+  - `UserPrincipal` implements both `UserDetails` and `OAuth2User`
+  - OAuth2 success → JWT generated → redirect to `http://localhost:5173/oauth2/callback?token=...`
+- [x] Implement `WebClient` HTTP client to call the Mock Bank API at `http://localhost:8081`.
+- [x] Implement core business logic services:
   - `CardService`: Add/delete/list cards per user
   - `SubscriptionAnalysisService`: Call Mock Bank -> filter `is_recurring=true` -> persist to DB -> return result
   - `SubscriptionCancellationService`: Call Mock Bank cancel endpoint -> update DB status to CANCELLED
-- [ ] Develop all REST API endpoints for Frontend:
+- [x] Develop all REST API endpoints for Frontend:
   - `POST /api/auth/register` — Email/password registration
   - `POST /api/auth/login` — Email/password login, returns JWT
   - `GET /api/auth/oauth2/google` — Google OAuth redirect
