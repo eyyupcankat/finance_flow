@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"rawtypes"})
 @ExtendWith(MockitoExtension.class)
 class SubscriptionAnalysisServiceTest {
 
@@ -59,10 +59,10 @@ class SubscriptionAnalysisServiceTest {
         card.setAddedAt(LocalDateTime.now());
     }
 
-    private MockBankTransactionDto buildTransaction(String merchant, boolean recurring) {
+    private MockBankTransactionDto buildTransaction(String merchant, Boolean isRecurring) {
         return new MockBankTransactionDto(1L, "4111000000000000", merchant,
                 merchant + " subscription", BigDecimal.valueOf(9.99),
-                "USD", LocalDate.now(), "ENTERTAINMENT", recurring);
+                "USD", LocalDate.now(), "ENTERTAINMENT", isRecurring);
     }
 
     private void mockWebClientGet(Flux<MockBankTransactionDto> flux) {
@@ -129,11 +129,12 @@ class SubscriptionAnalysisServiceTest {
 
     @Test
     void analyzeCard_cardNotBelongingToUser_throwsResourceNotFoundException() {
+        when(userRepository.findById(99L)).thenReturn(Optional.of(user));
         when(cardRepository.findByIdAndUserId(1L, 99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> analysisService.analyzeCard(1L, 99L))
                 .isInstanceOf(ResourceNotFoundException.class)
-                .hasMessageContaining("Card not found");
+                .hasMessageContaining("Card not found for this account");
     }
 
     @Test

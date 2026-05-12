@@ -33,7 +33,7 @@ public class CardService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Card already linked to your account");
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
 
         VirtualCard card = VirtualCard.builder()
                 .user(user)
@@ -46,7 +46,7 @@ public class CardService {
 
     public void deleteCard(Long cardId, Long userId) {
         VirtualCard card = cardRepository.findByIdAndUserId(cardId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("CARD_NOT_FOUND", "Card not found"));
         cardRepository.delete(card);
     }
 }

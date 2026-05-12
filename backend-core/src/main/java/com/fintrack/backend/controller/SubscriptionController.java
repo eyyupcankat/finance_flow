@@ -23,11 +23,14 @@ public class SubscriptionController {
     private final SubscriptionRepository subscriptionRepository;
 
     @GetMapping
-    public ResponseEntity<List<SubscriptionResponse>> getSubscriptions(@AuthenticationPrincipal UserPrincipal principal) {
-        List<SubscriptionResponse> result = subscriptionRepository.findByUserId(principal.getId())
-                .stream()
-                .map(SubscriptionResponse::from)
-                .toList();
+    public ResponseEntity<List<SubscriptionResponse>> getSubscriptions(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam(required = false) SubscriptionStatus status) {
+        List<SubscriptionResponse> result = (status != null)
+                ? subscriptionRepository.findByUserIdAndStatus(principal.getId(), status)
+                        .stream().map(SubscriptionResponse::from).toList()
+                : subscriptionRepository.findByUserId(principal.getId())
+                        .stream().map(SubscriptionResponse::from).toList();
         return ResponseEntity.ok(result);
     }
 

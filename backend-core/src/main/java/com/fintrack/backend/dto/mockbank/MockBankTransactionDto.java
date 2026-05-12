@@ -10,7 +10,7 @@ public record MockBankTransactionDto(
         String description,
         BigDecimal amount,
         String currency,
-        LocalDate date,
+        LocalDate transactionDate,
         String category,
-        boolean recurring
+        Boolean isRecurring
 ) {}

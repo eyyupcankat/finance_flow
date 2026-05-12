@@ -27,16 +27,16 @@ public class SubscriptionAnalysisService {
     private final SubscriptionRepository subscriptionRepository;
 
     public List<SubscriptionResponse> analyzeCard(Long cardId, Long userId) {
-        VirtualCard card = cardRepository.findByIdAndUserId(cardId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Card not found"));
-
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
+
+        VirtualCard card = cardRepository.findByIdAndUserId(cardId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("CARD_NOT_FOUND", "Card not found for this account"));
 
         List<MockBankTransactionDto> transactions = fetchTransactions(card.getCardNumber());
 
         transactions.stream()
-                .filter(MockBankTransactionDto::recurring)
+                .filter(t -> Boolean.TRUE.equals(t.isRecurring()))
                 .filter(t -> !subscriptionRepository.existsByCardIdAndName(cardId, t.merchant()))
                 .forEach(t -> {
                     Subscription subscription = Subscription.builder()
@@ -67,7 +67,7 @@ public class SubscriptionAnalysisService {
                     .block();
             return result != null ? result : List.of();
         } catch (WebClientResponseException.NotFound e) {
-            throw new ResourceNotFoundException("Card not found in Mock Bank: " + cardNumber);
+            throw new ResourceNotFoundException("CARD_NOT_FOUND_IN_MOCK_BANK", "Card " + cardNumber + " not found in Mock Bank");
         }
     }
 }

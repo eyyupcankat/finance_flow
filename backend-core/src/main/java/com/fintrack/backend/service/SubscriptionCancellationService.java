@@ -21,7 +21,7 @@ public class SubscriptionCancellationService {
 
     public SubscriptionResponse cancelSubscription(Long subscriptionId, Long userId) {
         Subscription subscription = subscriptionRepository.findByIdAndUserId(subscriptionId, userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Subscription not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("SUBSCRIPTION_NOT_FOUND", "Subscription not found"));
 
         if (subscription.getStatus() == SubscriptionStatus.CANCELLED) {
             return SubscriptionResponse.from(subscription);
