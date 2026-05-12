@@ -45,4 +45,9 @@ export const subscriptionService = {
   cancel: (id) => api.post(`/subscriptions/${id}/cancel`),
 }
 
+export const dashboardService = {
+  getSummary: () => api.get('/dashboard/summary'),
+  getTransactions: () => api.get('/dashboard/transactions'),
+}
+
 export default api

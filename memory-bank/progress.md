@@ -79,17 +79,16 @@
 - None currently (Project in planning/design phase).
 
 ### Phase 5: Bug Fixes & Refinements
-- [ ] **Global:** Fix hardcoded User Profile name/avatar in Topbar to reflect logged-in user.
-- [ ] **Global:** Fix "FinanceFlow" branding to match "FinTrack" project name.
-- [ ] **Global:** Remove the floating "+" button on the bottom right.
-- [ ] **Topbar:** Activate the "?" (Help) button to open a modal/dropdown with dummy FAQ content (questions & answers).
-- [ ] **Topbar:** Activate the Notifications button to open a dropdown (show "No notifications" if empty, or format notifications if present).
-- [ ] **Sidebar:** Change "Upgrade Pro Plan" button behavior. Instead of redirecting to login, route to a new Upgrade page showing Free vs Pro plan comparison with dummy features.
-- [ ] **Dashboard:** Connect "Total Balance", "Monthly Income", and "Monthly Expenses" metrics to backend data.
-- [ ] **Dashboard:** Fetch "Recent Transactions" dynamically from backend instead of hardcoded data.
-- [ ] **Dashboard:** Activate "View All" button in Recent Transactions (should open a full transactions view/modal with pagination, e.g., 10 per page).
-- [ ] **Dashboard:** Activate or remove the search bar in the Topbar.
-- [ ] **Dashboard:** Update "Subscriptions Preview" to show actual detected subscriptions.
+- [x] **Global:** Fix hardcoded User Profile name/avatar in Topbar to reflect logged-in user.
+- [x] **Global:** Remove the floating "+" button on the bottom right.
+- [x] **Topbar:** Activate the "?" (Help) button to open a modal/dropdown with dummy FAQ content (questions & answers).
+- [x] **Topbar:** Activate the Notifications button to open a dropdown (show "No notifications" if empty, or format notifications if present).
+- [x] **Sidebar:** Change "Upgrade Pro Plan" button behavior. Instead of redirecting to login, route to a new Upgrade page showing Free vs Pro plan comparison with dummy features.
+- [x] **Dashboard:** Connect "Total Balance", "Monthly Income", and "Monthly Expenses" metrics to backend data.
+- [x] **Dashboard:** Fetch "Recent Transactions" dynamically from backend instead of hardcoded data.
+- [x] **Dashboard:** Activate "View All" button in Recent Transactions (should open a full transactions view/modal with pagination, e.g., 10 per page).
+- [x] **Dashboard:** Activate or remove the search bar in the Topbar.
+- [x] **Dashboard:** Update "Subscriptions Preview" to show actual detected subscriptions.
 - [ ] **Cards:** Add 16-digit client-side validation before linking a card.
 - [ ] **Cards:** Add visual success feedback (e.g., toast notification) after detecting subscriptions.
 - [ ] **Cards:** Refactor "Add Card" flow to select a Bank first (like in the dashboard design). Show Mock Bank as active, and 2-3 dummy banks that show a "Not yet supported" warning when clicked.

@@ -20,7 +20,7 @@ export default function Sidebar() {
           <TrendingUp size={18} className="text-white" />
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 leading-none">FinanceFlow</p>
+          <p className="text-sm font-bold text-gray-900 leading-none">FinTrack</p>
           <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">Modern Analytics</p>
         </div>
       </div>
@@ -48,12 +48,12 @@ export default function Sidebar() {
         <div className="bg-emerald-500 rounded-xl p-4 text-white">
           <p className="text-[11px] font-medium opacity-75">Power User</p>
           <p className="text-sm font-bold mt-0.5">Upgrade Pro</p>
-          <button
-            onClick={logout}
-            className="mt-3 w-full bg-white text-emerald-600 text-xs font-semibold py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
+          <NavLink
+            to="/upgrade"
+            className="mt-3 w-full bg-white text-emerald-600 text-xs font-semibold py-2 rounded-lg hover:bg-emerald-50 transition-colors flex justify-center"
           >
             Get Started
-          </button>
+          </NavLink>
         </div>
       </div>
     </aside>

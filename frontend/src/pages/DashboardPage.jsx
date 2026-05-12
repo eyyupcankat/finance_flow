@@ -1,26 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Wallet, TrendingDown, TrendingUp, Building2, Lock, RefreshCw,
-  Plus, MoreVertical, ChevronDown, ArrowUpRight, ArrowDownRight,
+  MoreVertical, ChevronDown, ArrowUpRight, ArrowDownRight, Loader2, X, ChevronLeft, ChevronRight
 } from 'lucide-react'
+import { cardService, dashboardService, subscriptionService } from '../services/api'
 
 const BANKS = ['Select a Bank', 'Mock National Bank', 'Virtual Finance Corp', 'Demo Credit Union']
 
-const MOCK_TRANSACTIONS = [
-  { date: 'Oct 24, 2023', description: 'Apple Store', category: 'Technology', amount: -149.0, color: 'bg-blue-100 text-blue-700' },
-  { date: 'Oct 23, 2023', description: 'Starbucks Coffee', category: 'Food & Drink', amount: -12.4, color: 'bg-orange-100 text-orange-700' },
-  { date: 'Oct 22, 2023', description: 'Salary Deposit', category: 'Income', amount: 4250.0, color: 'bg-emerald-100 text-emerald-700' },
-  { date: 'Oct 20, 2023', description: 'Whole Foods', category: 'Groceries', amount: -84.15, color: 'bg-green-100 text-green-700' },
-  { date: 'Oct 19, 2023', description: 'Uber Trip', category: 'Transport', amount: -22.5, color: 'bg-yellow-100 text-yellow-700' },
-]
-
-const MOCK_SUBSCRIPTIONS = [
-  { name: 'Netflix', amount: 19.99, color: 'bg-red-500', initial: 'N' },
-  { name: 'Spotify', amount: 10.99, color: 'bg-green-500', initial: 'S' },
-  { name: 'Equinox Gym', amount: 220.0, color: 'bg-gray-400', initial: 'E' },
-  { name: 'Adobe CC', amount: 54.99, color: 'bg-red-400', initial: 'A' },
-]
+const ICONS = {
+  'Netflix': { bg: 'bg-black', initial: 'N' },
+  'Spotify': { bg: 'bg-green-500', initial: 'S' },
+  'Amazon Prime': { bg: 'bg-blue-600', initial: 'A' },
+  'Adobe CC': { bg: 'bg-red-500', initial: 'Ai' },
+  'Tech Corp': { bg: 'bg-emerald-500', initial: 'T' },
+}
 
 function StatCard({ icon: Icon, iconBg, label, value, trend, trendLabel, trendPositive }) {
   return (
@@ -47,23 +41,139 @@ export default function DashboardPage() {
   const [cardNumber, setCardNumber] = useState('')
   const [bank, setBank] = useState('Select a Bank')
   const [fetching, setFetching] = useState(false)
+  const [loadingData, setLoadingData] = useState(true)
+  const [feedback, setFeedback] = useState(null)
+
+  const [summary, setSummary] = useState(null)
+  const [transactions, setTransactions] = useState([])
+  const [subscriptions, setSubscriptions] = useState([])
+
+  const [showAllTransactions, setShowAllTransactions] = useState(false)
+  const [txPage, setTxPage] = useState(1)
+  const txPerPage = 10
+
+  const loadDashboardData = async () => {
+    try {
+      setLoadingData(true)
+      const [sumRes, txRes, subRes] = await Promise.all([
+        dashboardService.getSummary(),
+        dashboardService.getTransactions(),
+        subscriptionService.getSubscriptions()
+      ])
+      setSummary(sumRes.data)
+      setTransactions(txRes.data)
+      setSubscriptions(subRes.data.filter(s => s.status !== 'CANCELLED'))
+    } catch (err) {
+      console.error('Failed to load dashboard data', err)
+    } finally {
+      setLoadingData(false)
+    }
+  }
+
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
 
   const formatCardNumber = (val) => {
     const digits = val.replace(/\D/g, '').slice(0, 16)
     return digits.replace(/(.{4})/g, '$1 ').trim()
   }
 
-  const handleFetch = () => {
-    setFetching(true)
-    setTimeout(() => setFetching(false), 1500)
+  const handleFetch = async () => {
+    if (!cardNumber || bank === 'Select a Bank') return
+    
+    if (bank !== 'Mock National Bank') {
+      setFeedback({ type: 'error', message: 'Bu bankadan şu anda veri çekilemiyor.' })
+      setTimeout(() => setFeedback(null), 3000)
+      return
+    }
+
+    try {
+      setFetching(true)
+      // Backend expects 'label' not 'bankName'
+      await cardService.addCard({ 
+        cardNumber: cardNumber.replace(/\s/g, ''), 
+        label: bank 
+      })
+      setFeedback({ type: 'success', message: 'Bank card connected successfully!' })
+      setCardNumber('')
+      setBank('Select a Bank')
+      // Refresh data
+      await loadDashboardData()
+    } catch (err) {
+      // Handle validation errors from backend (like "label: boş değer olamaz")
+      const errMsg = err.response?.data?.errors 
+        ? Object.entries(err.response.data.errors).map(([k, v]) => `${k}: ${v}`).join(', ')
+        : err.response?.data?.message || 'Failed to connect card'
+      
+      setFeedback({ type: 'error', message: errMsg })
+    } finally {
+      setFetching(false)
+      setTimeout(() => setFeedback(null), 3000)
+    }
+  }
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'Technology': return 'bg-blue-100 text-blue-700'
+      case 'Food & Drink': return 'bg-orange-100 text-orange-700'
+      case 'Income': return 'bg-emerald-100 text-emerald-700'
+      case 'Groceries': return 'bg-green-100 text-green-700'
+      case 'Transport': return 'bg-yellow-100 text-yellow-700'
+      case 'Entertainment': return 'bg-purple-100 text-purple-700'
+      case 'Shopping': return 'bg-pink-100 text-pink-700'
+      case 'Bills': return 'bg-red-100 text-red-700'
+      case 'Health': return 'bg-teal-100 text-teal-700'
+      default: return 'bg-gray-100 text-gray-700'
+    }
+  }
+
+  const paginatedTransactions = transactions.slice((txPage - 1) * txPerPage, txPage * txPerPage)
+  const totalPages = Math.ceil(transactions.length / txPerPage)
+
+  if (loadingData) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loader2 className="animate-spin text-emerald-500 w-8 h-8" />
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 relative">
+      {feedback && (
+        <div className={`fixed top-20 right-6 z-[100] px-6 py-3 rounded-xl shadow-lg border animate-in slide-in-from-right-full ${
+          feedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
+        }`}>
+          {feedback.message}
+        </div>
+      )}
+
       <div className="grid grid-cols-3 gap-5">
-        <StatCard icon={Wallet} iconBg="bg-emerald-500" label="Total Balance" value="$12,482.50" trend="+4.5%" trendLabel="+4.5% from last month" trendPositive />
-        <StatCard icon={TrendingDown} iconBg="bg-emerald-400" label="Monthly Income" value="$4,250.00" trend="On track" trendLabel="On track for goal" trendPositive />
-        <StatCard icon={TrendingUp} iconBg="bg-red-400" label="Monthly Expenses" value="$1,890.12" trend="+12%" trendLabel="+12% vs last month" trendPositive={false} />
+        <StatCard 
+          icon={Wallet} iconBg="bg-emerald-500" 
+          label="Total Balance" 
+          value={`$${summary?.totalBalance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`} 
+          trend={summary?.balanceTrend || "+0%"} 
+          trendLabel="from last month" 
+          trendPositive={summary?.balancePositive ?? true} 
+        />
+        <StatCard 
+          icon={TrendingDown} iconBg="bg-emerald-400" 
+          label="Monthly Income" 
+          value={`$${summary?.monthlyIncome?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`} 
+          trend={summary?.incomeTrend || "On track"} 
+          trendLabel="for goal" 
+          trendPositive={summary?.incomePositive ?? true} 
+        />
+        <StatCard 
+          icon={TrendingUp} iconBg="bg-red-400" 
+          label="Monthly Expenses" 
+          value={`$${summary?.monthlyExpenses?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`} 
+          trend={summary?.expenseTrend || "0%"} 
+          trendLabel="vs last month" 
+          trendPositive={summary?.expensePositive ?? false} 
+        />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -120,11 +230,11 @@ export default function DashboardPage() {
               </p>
               <button
                 onClick={handleFetch}
-                disabled={fetching || !cardNumber}
+                disabled={fetching || !cardNumber || bank === 'Select a Bank'}
                 className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw size={14} className={fetching ? 'animate-spin' : ''} />
-                {fetching ? 'Fetching...' : 'Fetch Transactions'}
+                {fetching ? 'Connecting...' : 'Connect Card'}
               </button>
             </div>
           </div>
@@ -135,34 +245,40 @@ export default function DashboardPage() {
         <div className="col-span-3 bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-gray-800">Recent Transactions</h3>
-            <Link to="/analytics" className="text-xs text-emerald-600 font-medium hover:text-emerald-700">View All</Link>
+            {transactions.length > 0 && (
+              <button onClick={() => setShowAllTransactions(true)} className="text-xs text-emerald-600 font-medium hover:text-emerald-700">View All</button>
+            )}
           </div>
-          <table className="w-full">
-            <thead>
-              <tr className="text-xs text-gray-400 border-b border-gray-100">
-                <th className="text-left pb-2 font-medium">Date</th>
-                <th className="text-left pb-2 font-medium">Description</th>
-                <th className="text-left pb-2 font-medium">Category</th>
-                <th className="text-right pb-2 font-medium">Amount</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {MOCK_TRANSACTIONS.map((tx, i) => (
-                <tr key={i} className="text-sm">
-                  <td className="py-3 text-gray-400 text-xs">{tx.date}</td>
-                  <td className="py-3 font-medium text-gray-800">{tx.description}</td>
-                  <td className="py-3">
-                    <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${tx.color}`}>
-                      {tx.category}
-                    </span>
-                  </td>
-                  <td className={`py-3 text-right font-semibold text-sm ${tx.amount > 0 ? 'text-emerald-600' : 'text-gray-800'}`}>
-                    {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
-                  </td>
+          {transactions.length === 0 ? (
+            <p className="text-sm text-gray-500 text-center py-6">No transactions found. Connect a card first.</p>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="text-xs text-gray-400 border-b border-gray-100">
+                  <th className="text-left pb-2 font-medium">Date</th>
+                  <th className="text-left pb-2 font-medium">Description</th>
+                  <th className="text-left pb-2 font-medium">Category</th>
+                  <th className="text-right pb-2 font-medium">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {transactions.slice(0, 5).map((tx, i) => (
+                  <tr key={i} className="text-sm">
+                    <td className="py-3 text-gray-400 text-xs">{tx.transactionDate}</td>
+                    <td className="py-3 font-medium text-gray-800">{tx.merchant}</td>
+                    <td className="py-3">
+                      <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${getCategoryColor(tx.category)}`}>
+                        {tx.category}
+                      </span>
+                    </td>
+                    <td className={`py-3 text-right font-semibold text-sm ${tx.amount > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                      {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
 
         <div className="col-span-2 bg-white rounded-xl border border-gray-200 p-5 flex flex-col">
@@ -171,23 +287,30 @@ export default function DashboardPage() {
             <p className="text-xs text-gray-400 mt-0.5">Based on monthly recurring patterns</p>
           </div>
           <div className="space-y-3 flex-1">
-            {MOCK_SUBSCRIPTIONS.map((sub, i) => (
-              <div key={i} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 ${sub.color} rounded-lg flex items-center justify-center`}>
-                    <span className="text-white text-xs font-bold">{sub.initial}</span>
+            {subscriptions.length === 0 ? (
+               <p className="text-sm text-gray-500 text-center py-6">No active subscriptions detected.</p>
+            ) : (
+              subscriptions.slice(0, 4).map((sub, i) => {
+                const icon = ICONS[sub.name] || { bg: 'bg-indigo-500', initial: sub.name ? sub.name[0] : '?' }
+                return (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 ${icon.bg} rounded-lg flex items-center justify-center`}>
+                        <span className="text-white text-xs font-bold">{icon.initial}</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">{sub.name}</p>
+                        <p className="text-xs text-emerald-600">Auto-Detected</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-gray-800">${sub.amount?.toFixed(2)}</p>
+                      <p className="text-xs text-gray-400">{sub.billingCycle === 'MONTHLY' ? 'Monthly' : sub.billingCycle}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{sub.name}</p>
-                    <p className="text-xs text-emerald-600">Auto-Detected</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-800">${sub.amount.toFixed(2)}</p>
-                  <p className="text-xs text-gray-400">Monthly</p>
-                </div>
-              </div>
-            ))}
+                )
+              })
+            )}
           </div>
           <Link
             to="/subscriptions"
@@ -198,9 +321,71 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <button className="fixed bottom-6 right-6 w-12 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg shadow-emerald-200 flex items-center justify-center transition-all hover:scale-105">
-        <Plus size={22} />
-      </button>
+      {showAllTransactions && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowAllTransactions(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">All Transactions</h2>
+                <p className="text-xs text-gray-500 mt-1">Showing {transactions.length} total transactions</p>
+              </div>
+              <button onClick={() => setShowAllTransactions(false)} className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg transition">
+                <X size={18} />
+              </button>
+            </div>
+            
+            <div className="overflow-y-auto flex-1 p-5">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-xs text-gray-400 border-b border-gray-100">
+                    <th className="text-left pb-3 font-medium">Date</th>
+                    <th className="text-left pb-3 font-medium">Description</th>
+                    <th className="text-left pb-3 font-medium">Category</th>
+                    <th className="text-right pb-3 font-medium">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginatedTransactions.map((tx, i) => (
+                    <tr key={i} className="text-sm hover:bg-gray-50 transition-colors">
+                      <td className="py-4 text-gray-400 text-xs">{tx.transactionDate}</td>
+                      <td className="py-4 font-medium text-gray-800">{tx.merchant}</td>
+                      <td className="py-4">
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${getCategoryColor(tx.category)}`}>
+                          {tx.category}
+                        </span>
+                      </td>
+                      <td className={`py-4 text-right font-semibold text-sm ${tx.amount > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                        {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="p-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+                <button 
+                  onClick={() => setTxPage(p => Math.max(1, p - 1))}
+                  disabled={txPage === 1}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg disabled:opacity-50 transition"
+                >
+                  <ChevronLeft size={16} /> Previous
+                </button>
+                <span className="text-sm font-medium text-gray-600">Page {txPage} of {totalPages}</span>
+                <button 
+                  onClick={() => setTxPage(p => Math.min(totalPages, p + 1))}
+                  disabled={txPage === totalPages}
+                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-200 rounded-lg disabled:opacity-50 transition"
+                >
+                  Next <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

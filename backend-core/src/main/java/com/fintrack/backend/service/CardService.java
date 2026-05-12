@@ -10,6 +10,7 @@ import com.fintrack.backend.repository.VirtualCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CardService {
 
     private final VirtualCardRepository cardRepository;
     private final UserRepository userRepository;
+    private final WebClient mockBankWebClient;
 
     public List<CardResponse> getCards(Long userId) {
         return cardRepository.findByUserId(userId)
@@ -32,6 +34,10 @@ public class CardService {
         if (cardRepository.existsByUserIdAndCardNumber(userId, request.cardNumber())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Card already linked to your account");
         }
+
+        // Validate card existence with Mock Bank
+        validateWithMockBank(request.cardNumber());
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
 
@@ -42,6 +48,18 @@ public class CardService {
                 .build();
 
         return CardResponse.from(cardRepository.save(card));
+    }
+
+    private void validateWithMockBank(String cardNumber) {
+        try {
+            mockBankWebClient.get()
+                    .uri("/api/v1/bank/cards/{cardNumber}/validate", cardNumber)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid card number: Card not found in bank records.");
+        }
     }
 
     public void deleteCard(Long cardId, Long userId) {

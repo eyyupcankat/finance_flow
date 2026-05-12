@@ -9,6 +9,7 @@ import CardIntegrationPage from './pages/CardIntegrationPage'
 import SubscriptionsPage from './pages/SubscriptionsPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import SettingsPage from './pages/SettingsPage'
+import UpgradePage from './pages/UpgradePage'
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/subscriptions" element={<SubscriptionsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/upgrade" element={<UpgradePage />} />
           </Route>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
