@@ -230,7 +230,7 @@ export default function DashboardPage() {
               </p>
               <button
                 onClick={handleFetch}
-                disabled={fetching || !cardNumber || bank === 'Select a Bank'}
+                disabled={fetching || cardNumber.replace(/\s/g, '').length !== 16 || bank === 'Select a Bank'}
                 className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <RefreshCw size={14} className={fetching ? 'animate-spin' : ''} />
@@ -322,8 +322,13 @@ export default function DashboardPage() {
       </div>
 
       {showAllTransactions && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setShowAllTransactions(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+        <div 
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" 
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setShowAllTransactions(false)
+          }}
+        >
+          <div className="bg-white rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[85vh]" onMouseDown={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">All Transactions</h2>

@@ -89,16 +89,17 @@
 - [x] **Dashboard:** Activate "View All" button in Recent Transactions (should open a full transactions view/modal with pagination, e.g., 10 per page).
 - [x] **Dashboard:** Activate or remove the search bar in the Topbar.
 - [x] **Dashboard:** Update "Subscriptions Preview" to show actual detected subscriptions.
-- [ ] **Cards:** Add 16-digit client-side validation before linking a card.
-- [ ] **Cards:** Add visual success feedback (e.g., toast notification) after detecting subscriptions.
-- [ ] **Cards:** Refactor "Add Card" flow to select a Bank first (like in the dashboard design). Show Mock Bank as active, and 2-3 dummy banks that show a "Not yet supported" warning when clicked.
-- [ ] **Cards:** Activate or remove the "Manage Credentials" button in the Security Status section.
+- [x] **Cards:** Add 16-digit client-side validation before linking a card.
+- [x] **Cards:** Add visual success feedback (e.g., toast notification) after detecting subscriptions.
+- [x] **Cards:** Refactor "Add Card" flow to select a Bank first (like in the dashboard design). Show Mock Bank as active, and 2-3 dummy banks that show a "Not yet supported" warning when clicked.
+- [x] **Cards:** Activate or remove the "Manage Credentials" button in the Security Status section.
 - [ ] **Subscriptions:** Ensure top statistics (Total Monthly Spending, Active Services) dynamically calculate based on fetched subscriptions.
 - [ ] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
 - [ ] **Analytics:** Remove hardcoded mock data and integrate with backend statistics endpoints.
 - [ ] **Analytics:** Activate "Weekly", "Monthly", "Yearly" toggle buttons.
 - [ ] **Analytics:** Activate or remove the three-dot menu on "Monthly Spending Trend" (e.g., add options like View All Data, Monthly, Yearly).
 - [ ] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
+- [ ] **Settings:** Add logout button in Settings page.
 - [ ] **Settings (Security):** Make "Update Password" functional (needs backend `POST /api/user/change-password` and frontend validation).
 - [ ] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
 - [ ] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
