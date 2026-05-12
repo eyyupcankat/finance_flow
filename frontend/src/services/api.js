@@ -48,6 +48,7 @@ export const subscriptionService = {
 export const dashboardService = {
   getSummary: () => api.get('/dashboard/summary'),
   getTransactions: () => api.get('/dashboard/transactions'),
+  getAnalytics: (timeframe) => api.get(`/analytics?timeframe=${timeframe || 'Monthly'}`)
 }
 
 export default api

@@ -57,8 +57,10 @@ public class CardService {
                     .retrieve()
                     .toBodilessEntity()
                     .block();
+        } catch (org.springframework.web.reactive.function.client.WebClientResponseException.NotFound e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Card not found in bank records: " + cardNumber);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid card number: Card not found in bank records.");
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Bank API connection failed. Please ensure mock-bank-api is running on port 8081.");
         }
     }
 

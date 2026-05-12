@@ -93,9 +93,9 @@
 - [x] **Cards:** Add visual success feedback (e.g., toast notification) after detecting subscriptions.
 - [x] **Cards:** Refactor "Add Card" flow to select a Bank first (like in the dashboard design). Show Mock Bank as active, and 2-3 dummy banks that show a "Not yet supported" warning when clicked.
 - [x] **Cards:** Activate or remove the "Manage Credentials" button in the Security Status section.
-- [ ] **Analytics:** Remove hardcoded mock data and integrate with backend statistics endpoints.
-- [ ] **Analytics:** Activate "Weekly", "Monthly", "Yearly" toggle buttons.
-- [ ] **Analytics:** Activate or remove the three-dot menu on "Monthly Spending Trend" (e.g., add options like View All Data, Monthly, Yearly).
+- [x] **Analytics:** Remove hardcoded mock data and integrate with backend statistics endpoints.
+- [x] **Analytics:** Activate "Weekly", "Monthly", "Yearly" toggle buttons.
+- [x] **Analytics:** Activate or remove the three-dot menu on "Monthly Spending Trend" (e.g., add options like View All Data, Monthly, Yearly).
 - [ ] **Subscriptions:** Ensure top statistics (Total Monthly Spending, Active Services) dynamically calculate based on fetched subscriptions.
 - [ ] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
 - [ ] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*

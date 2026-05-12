@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,84 +26,52 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Clear existing data to force update with new income/expense format
         transactionRepository.deleteAll();
         cardRepository.deleteAll();
         
-        // Seed Cards
         cardRepository.saveAll(List.of(
             Card.builder().cardNumber(CARD_FULL).cardHolderName("Alex Rivera").bankName("Mock National Bank").build(),
             Card.builder().cardNumber(CARD_NONE).cardHolderName("Jane Doe").bankName("Mock National Bank").build(),
             Card.builder().cardNumber(CARD_MINIMAL).cardHolderName("John Smith").bankName("Mock National Bank").build()
         ));
         
-        transactionRepository.saveAll(buildFullDataset());
-        transactionRepository.saveAll(buildNoRecurringDataset());
-        transactionRepository.saveAll(buildMinimalDataset());
-    }
+        LocalDate now = LocalDate.now();
+        List<Transaction> txs = new ArrayList<>();
 
-    private List<Transaction> buildFullDataset() {
-        return List.of(
-            // --- Income ---
-            tx(CARD_FULL, "Tech Corp",     "Monthly Salary",           "4250.00", "Income",       "2024-10-25", false),
-            tx(CARD_FULL, "Tech Corp",     "Monthly Salary",           "4250.00", "Income",       "2024-09-25", false),
-            
-            // --- Subscriptions (Negative) ---
-            tx(CARD_FULL, "Netflix",       "Monthly streaming plan",   "-15.99",  "Entertainment", "2024-08-01", true),
-            tx(CARD_FULL, "Netflix",       "Monthly streaming plan",   "-15.99",  "Entertainment", "2024-09-01", true),
-            tx(CARD_FULL, "Netflix",       "Monthly streaming plan",   "-15.99",  "Entertainment", "2024-10-01", true),
-            tx(CARD_FULL, "Spotify",       "Premium music subscription","-9.99",  "Entertainment", "2024-08-01", true),
-            tx(CARD_FULL, "Spotify",       "Premium music subscription","-9.99",  "Entertainment", "2024-09-01", true),
-            tx(CARD_FULL, "Spotify",       "Premium music subscription","-9.99",  "Entertainment", "2024-10-01", true),
-            tx(CARD_FULL, "Amazon Prime",  "Annual membership monthly", "-14.99", "Shopping",      "2024-08-15", true),
-            tx(CARD_FULL, "Amazon Prime",  "Annual membership monthly", "-14.99", "Shopping",      "2024-09-15", true),
-            tx(CARD_FULL, "Amazon Prime",  "Annual membership monthly", "-14.99", "Shopping",      "2024-10-15", true),
-            tx(CARD_FULL, "Adobe CC",      "Creative Cloud all apps",   "-54.99", "Software",      "2024-09-05", true),
-            tx(CARD_FULL, "Adobe CC",      "Creative Cloud all apps",   "-54.99", "Software",      "2024-10-05", true),
-            
-            // --- Purchases (Negative) ---
-            tx(CARD_FULL, "Starbucks",     "Coffee purchase",           "-5.50",  "Food & Drink",  "2024-10-15", false),
-            tx(CARD_FULL, "Uber",          "Trip to downtown",          "-22.50", "Transport",     "2024-10-12", false),
-            tx(CARD_FULL, "Apple Store",   "AirPods Pro",               "-149.00","Technology",    "2024-10-05", false),
-            tx(CARD_FULL, "Whole Foods",   "Weekly groceries",          "-84.15", "Groceries",     "2024-10-08", false),
-            tx(CARD_FULL, "Shell",         "Fuel",                      "-60.00", "Transport",     "2024-10-03", false),
-            tx(CARD_FULL, "Nike Store",    "Running Shoes",             "-120.00","Shopping",      "2024-10-01", false),
-            tx(CARD_FULL, "Best Buy",      "Keyboard",                  "-75.00", "Technology",    "2024-09-28", false),
-            tx(CARD_FULL, "Cinema",        "Movie night",               "-35.00", "Entertainment", "2024-09-27", false),
-            tx(CARD_FULL, "Pharmacy",      "Medicine",                  "-45.00", "Health",        "2024-09-26", false),
-            tx(CARD_FULL, "Bookstore",     "Fiction Book",              "-18.00", "Shopping",      "2024-09-24", false),
-            tx(CARD_FULL, "Gym",           "Monthly Membership",        "-50.00", "Health",        "2024-09-20", false),
-            tx(CARD_FULL, "Coffee Shop",   "Latte",                     "-4.50",  "Food & Drink",  "2024-09-18", false),
-            tx(CARD_FULL, "Electric Co",   "Utility Bill",              "-120.00","Bills",         "2024-09-15", false),
-            tx(CARD_FULL, "Gas Co",        "Utility Bill",              "-45.00", "Bills",         "2024-09-14", false),
-            tx(CARD_FULL, "Internet",      "Fiber Connection",          "-80.00", "Bills",         "2024-09-12", false)
-        );
-    }
+        // CARD_FULL - Mix of income, spending, and subscriptions
+        // Income
+        txs.add(tx(CARD_FULL, "Tech Corp", "Salary", "5200.00", "Income", now.minusDays(2), false));
+        txs.add(tx(CARD_FULL, "Freelance", "Project X", "1500.00", "Income", now.minusDays(15), false));
 
-    private List<Transaction> buildNoRecurringDataset() {
-        return List.of(
-            tx(CARD_NONE, "Starbucks",   "Coffee purchase",  "-5.50",  "Food & Drink", "2024-10-15", false),
-            tx(CARD_NONE, "H&M",         "Clothing purchase","-45.00", "Shopping",     "2024-10-12", false),
-            tx(CARD_NONE, "Pizza Hut",   "Dinner order",     "-18.00", "Food & Drink", "2024-10-10", false),
-            tx(CARD_NONE, "Shell",       "Fuel",             "-60.00", "Transport",    "2024-10-08", false)
-        );
-    }
+        // Recent Spending (Last 7 days)
+        txs.add(tx(CARD_FULL, "Starbucks", "Coffee", "-5.50", "Food", now.minusDays(1), false));
+        txs.add(tx(CARD_FULL, "Uber", "Trip", "-25.00", "Transport", now.minusDays(2), false));
+        txs.add(tx(CARD_FULL, "Whole Foods", "Groceries", "-120.00", "Groceries", now.minusDays(3), false));
+        txs.add(tx(CARD_FULL, "Amazon", "Book", "-15.00", "Shopping", now.minusDays(5), false));
 
-    private List<Transaction> buildMinimalDataset() {
-        return List.of(
-            tx(CARD_MINIMAL, "Starbucks Coffee", "Morning coffee", "-3.50", "Food & Drink", "2024-10-15", false)
-        );
+        // Subscriptions (Recurring)
+        txs.add(tx(CARD_FULL, "Netflix", "Streaming", "-19.99", "Entertainment", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_FULL, "Spotify", "Music", "-9.99", "Entertainment", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_FULL, "Adobe CC", "Software", "-54.99", "Technology", now.withDayOfMonth(5), true));
+
+        // Older spending (For Monthly/Yearly view)
+        txs.add(tx(CARD_FULL, "Apple Store", "AirPods", "-249.00", "Technology", now.minusDays(20), false));
+        txs.add(tx(CARD_FULL, "Rent", "Monthly Rent", "-1800.00", "Living", now.minusDays(25), false));
+        txs.add(tx(CARD_FULL, "Nike", "Shoes", "-110.00", "Shopping", now.minusMonths(2), false));
+        txs.add(tx(CARD_FULL, "Flight", "Holiday", "-850.00", "Transport", now.minusMonths(4), false));
+
+        transactionRepository.saveAll(txs);
     }
 
     private Transaction tx(String card, String merchant, String desc,
-                           String amount, String category, String date, boolean recurring) {
+                           String amount, String category, LocalDate date, boolean recurring) {
         return Transaction.builder()
                 .cardNumber(card)
                 .merchant(merchant)
                 .description(desc)
                 .amount(new BigDecimal(amount))
                 .currency("USD")
-                .transactionDate(LocalDate.parse(date))
+                .transactionDate(date)
                 .category(category)
                 .recurring(recurring)
                 .build();
