@@ -3,6 +3,7 @@ import axios from 'axios'
 const api = axios.create({
   baseURL: 'http://localhost:8080/api',
   headers: { 'Content-Type': 'application/json' },
+  timeout: 10000, // 10 seconds timeout
 })
 
 api.interceptors.request.use((config) => {
@@ -14,6 +15,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.code === 'ECONNABORTED') {
+      console.error('API timeout')
+      return Promise.reject({ response: { data: { message: 'Request timed out. Please try again later.' } } })
+    }
     if (error.response?.status === 401) {
       localStorage.removeItem('fintrack_token')
       localStorage.removeItem('fintrack_user')

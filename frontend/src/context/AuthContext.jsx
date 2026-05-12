@@ -5,7 +5,13 @@ const AuthContext = createContext(null)
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem('fintrack_user')
-    return stored ? JSON.parse(stored) : null
+    if (!stored || stored === 'undefined') return null
+    try {
+      return JSON.parse(stored)
+    } catch (e) {
+      localStorage.removeItem('fintrack_user')
+      return null
+    }
   })
   const [token, setToken] = useState(() => localStorage.getItem('fintrack_token'))
 

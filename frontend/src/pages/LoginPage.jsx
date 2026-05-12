@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, Shield, TrendingUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -29,13 +29,26 @@ export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const errParam = params.get('error')
+    if (errParam) {
+      setError(`Authentication failed: ${errParam.replace(/_/g, ' ')}`)
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     try {
       const res = await authService.login({ email, password })
-      login(res.data.user, res.data.token)
+      const userData = {
+        id: res.data.userId,
+        name: res.data.name,
+        email: res.data.email
+      }
+      login(userData, res.data.token)
       navigate('/dashboard')
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid credentials. Please try again.')

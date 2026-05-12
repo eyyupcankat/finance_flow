@@ -68,12 +68,40 @@
   - `POST /api/subscriptions/{id}/cancel` — Cancel a subscription
 
 ### Phase 4: Integration, Testing & Delivery
-- [ ] Connect React frontend to Main Backend endpoints.
-- [ ] End-to-end test: Login -> Add Card -> Detect Subscriptions -> Cancel Subscription.
-- [ ] Test all 4 Mock Bank card scenarios on the frontend.
-- [ ] Implement error handling: Invalid Card, API timeout, Unauthorized, OAuth failure.
+- [x] Connect React frontend to Main Backend endpoints.
+- [x] End-to-end test: Login -> Add Card -> Detect Subscriptions -> Cancel Subscription.
+- [x] Test all 4 Mock Bank card scenarios on the frontend.
+- [x] Implement error handling: Invalid Card, API timeout, Unauthorized, OAuth failure.
 - [ ] Final UI review against original screenshots.
 - [ ] Clean up code, finalize for course delivery.
 
 ## Known Issues
 - None currently (Project in planning/design phase).
+
+### Phase 5: Bug Fixes & Refinements
+- [ ] **Global:** Fix hardcoded User Profile name/avatar in Topbar to reflect logged-in user.
+- [ ] **Global:** Fix "FinanceFlow" branding to match "FinTrack" project name.
+- [ ] **Global:** Remove the floating "+" button on the bottom right.
+- [ ] **Topbar:** Activate the "?" (Help) button to open a modal/dropdown with dummy FAQ content (questions & answers).
+- [ ] **Topbar:** Activate the Notifications button to open a dropdown (show "No notifications" if empty, or format notifications if present).
+- [ ] **Sidebar:** Change "Upgrade Pro Plan" button behavior. Instead of redirecting to login, route to a new Upgrade page showing Free vs Pro plan comparison with dummy features.
+- [ ] **Dashboard:** Connect "Total Balance", "Monthly Income", and "Monthly Expenses" metrics to backend data.
+- [ ] **Dashboard:** Fetch "Recent Transactions" dynamically from backend instead of hardcoded data.
+- [ ] **Dashboard:** Activate "View All" button in Recent Transactions (should open a full transactions view/modal with pagination, e.g., 10 per page).
+- [ ] **Dashboard:** Activate or remove the search bar in the Topbar.
+- [ ] **Dashboard:** Update "Subscriptions Preview" to show actual detected subscriptions.
+- [ ] **Cards:** Add 16-digit client-side validation before linking a card.
+- [ ] **Cards:** Add visual success feedback (e.g., toast notification) after detecting subscriptions.
+- [ ] **Cards:** Refactor "Add Card" flow to select a Bank first (like in the dashboard design). Show Mock Bank as active, and 2-3 dummy banks that show a "Not yet supported" warning when clicked.
+- [ ] **Cards:** Activate or remove the "Manage Credentials" button in the Security Status section.
+- [ ] **Subscriptions:** Ensure top statistics (Total Monthly Spending, Active Services) dynamically calculate based on fetched subscriptions.
+- [ ] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
+- [ ] **Analytics:** Remove hardcoded mock data and integrate with backend statistics endpoints.
+- [ ] **Analytics:** Activate "Weekly", "Monthly", "Yearly" toggle buttons.
+- [ ] **Analytics:** Activate or remove the three-dot menu on "Monthly Spending Trend" (e.g., add options like View All Data, Monthly, Yearly).
+- [ ] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
+- [ ] **Settings (Security):** Make "Update Password" functional (needs backend `POST /api/user/change-password` and frontend validation).
+- [ ] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
+- [ ] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
+- [ ] **Settings (Security):** Fix "Delete Forever" button so it actually deletes the account via backend instead of just logging out locally.
+- [ ] **Auth:** Improve Registration error handling (e.g., gracefully showing field errors without clearing form).
