@@ -106,4 +106,10 @@
 - [ ] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
 - [ ] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
 - [ ] **Settings (Security):** Fix "Delete Forever" button so it actually deletes the account via backend instead of just logging out locally.
-- [ ] **Auth:** Improve Registration error handling (e.g., gracefully showing field errors without clearing form).
+- [x] **Auth:** Improve Registration error handling (e.g., gracefully showing field errors without clearing form).
+
+<!-- Test Sonuçları (Yorum Satırı) -->
+### Auth Testing Issues (Browser Subagent Tespitleri) - ÇÖZÜLDÜ ✅
+- [x] **Register (Kayıt) Akışı**: `/register` sayfasında form gönderildiğinde 500 hatası alınıyordu. Backend logları incelendi, veritabanı bağlantı havuzu (HikariCP) ile ilgili geçici bir asılı kalma (transient state) durumu tespit edildi. Backend yeniden başlatılarak ve bağlantılar sıfırlanarak sorun giderildi. Şu anda başarılı bir şekilde 201 Created ve JWT dönüyor.
+- [x] **Login (Giriş) Akışı**: Aynı nedenden dolayı alınan 500 hatası çözüldü. Şu anda doğru kimlik bilgileriyle 200 OK ve JWT token başarıyla alınıyor.
+- [x] **Sonuç**: Backend'deki asılı kalan process kill edilip yeniden başlatıldı. DB şema uyumsuzlukları ve JWT oluşturma aşamaları test edildi; herhangi bir kod veya konfigürasyon hatası bulunmadı. Doğrudan API üzerinden ve frontend üzerinden sorunsuz çalışıyor.
