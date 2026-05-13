@@ -60,6 +60,30 @@ public class DataInitializer implements CommandLineRunner {
         txs.add(tx(CARD_FULL, "Nike", "Shoes", "-110.00", "Shopping", now.minusMonths(2), false));
         txs.add(tx(CARD_FULL, "Flight", "Holiday", "-850.00", "Transport", now.minusMonths(4), false));
 
+        // CARD_NONE - Now has transactions
+        txs.add(tx(CARD_NONE, "Gig Economy", "Side Hustle", "800.00", "Income", now.minusDays(5), false));
+        txs.add(tx(CARD_NONE, "McDonalds", "Lunch", "-12.50", "Food", now.minusDays(1), false));
+        txs.add(tx(CARD_NONE, "Uber", "Trip", "-15.00", "Transport", now.minusDays(2), false));
+        txs.add(tx(CARD_NONE, "Shell", "Gas", "-60.00", "Transport", now.minusDays(4), false));
+        txs.add(tx(CARD_NONE, "Amazon", "Prime Member", "-14.99", "Shopping", now.withDayOfMonth(10), true));
+        txs.add(tx(CARD_NONE, "YouTube", "Premium", "-11.99", "Entertainment", now.withDayOfMonth(15), true));
+        txs.add(tx(CARD_NONE, "Steam", "Game Purchase", "-59.99", "Entertainment", now.minusDays(10), false));
+        txs.add(tx(CARD_NONE, "Local Grocery", "Food", "-45.00", "Groceries", now.minusDays(12), false));
+        txs.add(tx(CARD_NONE, "Gym", "Monthly Membership", "-35.00", "Health", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_NONE, "Electricity", "Utility Bill", "-120.00", "Bills", now.minusDays(20), false));
+
+        // CARD_MINIMAL - Minimal but has enough for testing
+        txs.add(tx(CARD_MINIMAL, "Investment Div", "Dividends", "150.00", "Income", now.minusDays(10), false));
+        txs.add(tx(CARD_MINIMAL, "Subway", "Dinner", "-8.00", "Food", now.minusDays(1), false));
+        txs.add(tx(CARD_MINIMAL, "App Store", "iCloud", "-0.99", "Technology", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_MINIMAL, "App Store", "Apple Music", "-10.99", "Entertainment", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_MINIMAL, "Medium", "Reading", "-5.00", "Education", now.withDayOfMonth(12), true));
+        txs.add(tx(CARD_MINIMAL, "New York Times", "News", "-4.00", "Education", now.withDayOfMonth(1), true));
+        txs.add(tx(CARD_MINIMAL, "Parking", "City Hall", "-10.00", "Transport", now.minusDays(15), false));
+        txs.add(tx(CARD_MINIMAL, "Cinema", "Movie Night", "-18.00", "Entertainment", now.minusDays(22), false));
+        txs.add(tx(CARD_MINIMAL, "Bakery", "Breakfast", "-6.50", "Food", now.minusDays(28), false));
+        txs.add(tx(CARD_MINIMAL, "Donation", "Charity", "-25.00", "Other", now.minusDays(5), false));
+
         transactionRepository.saveAll(txs);
     }
 

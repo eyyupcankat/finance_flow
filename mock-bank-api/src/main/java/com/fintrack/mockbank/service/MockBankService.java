@@ -27,7 +27,7 @@ public class MockBankService {
         if (CARD_NOT_FOUND.equals(cardNumber)) {
             throw new CardNotFoundException(cardNumber);
         }
-        List<Transaction> transactions = transactionRepository.findActiveByCardNumber(cardNumber);
+        List<Transaction> transactions = transactionRepository.findByCardNumber(cardNumber);
         return transactions.stream().map(this::toResponse).toList();
     }
 

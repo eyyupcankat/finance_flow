@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Filter, Plus, MoreVertical, TrendingUp, Calendar, AlertTriangle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { subscriptionService } from '../services/api'
@@ -55,15 +55,25 @@ export default function SubscriptionsPage() {
     }
   }
 
-  const activeSubs = subs.filter(s => s.status !== 'CANCELLED')
-  const totalMonthly = activeSubs.reduce((acc, curr) => acc + (curr.amount || 0), 0)
+  const stats = useMemo(() => {
+    const active = subs.filter(s => s.status !== 'CANCELLED')
+    const cancelled = subs.filter(s => s.status === 'CANCELLED')
+    const totalMonthly = active.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
+    
+    return {
+      activeCount: active.length,
+      cancelledCount: cancelled.length,
+      totalMonthly,
+      totalCount: subs.length
+    }
+  }, [subs])
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Managing {activeSubs.length} active subscriptions.</p>
+          <p className="text-sm text-gray-500 mt-0.5">Managing {stats.activeCount} active subscriptions.</p>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={loadSubscriptions} className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
@@ -80,7 +90,7 @@ export default function SubscriptionsPage() {
             </div>
           </div>
           <p className="text-xs text-gray-400 mt-3">Monthly Spending (Active)</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">${totalMonthly.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-0.5">${stats.totalMonthly.toFixed(2)}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-start justify-between mb-2">
@@ -90,7 +100,7 @@ export default function SubscriptionsPage() {
             <span className="text-xs text-gray-400">Next 7 days</span>
           </div>
           <p className="text-xs text-gray-400 mt-3">Active Subscriptions</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{activeSubs.length} Services</p>
+          <p className="text-2xl font-bold text-gray-900 mt-0.5">{stats.activeCount} Services</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-start justify-between mb-2">
@@ -100,7 +110,7 @@ export default function SubscriptionsPage() {
             <span className="text-xs font-semibold text-amber-600">Action needed</span>
           </div>
           <p className="text-xs text-gray-400 mt-3">Cancelled / Inactive</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{subs.length - activeSubs.length} Services</p>
+          <p className="text-2xl font-bold text-gray-900 mt-0.5">{stats.cancelledCount} Services</p>
         </div>
       </div>
 

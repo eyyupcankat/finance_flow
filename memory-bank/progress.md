@@ -96,9 +96,9 @@
 - [x] **Analytics:** Remove hardcoded mock data and integrate with backend statistics endpoints.
 - [x] **Analytics:** Activate "Weekly", "Monthly", "Yearly" toggle buttons.
 - [x] **Analytics:** Activate or remove the three-dot menu on "Monthly Spending Trend" (e.g., add options like View All Data, Monthly, Yearly).
-- [ ] **Subscriptions:** Ensure top statistics (Total Monthly Spending, Active Services) dynamically calculate based on fetched subscriptions.
-- [ ] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
-- [ ] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*
+- [x] **Subscriptions:** Ensure top statistics (Total Monthly Spending, Active Services) dynamically calculate based on fetched subscriptions.
+- [x] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
+- [x] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*
 
 - [ ] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
 - [ ] **Settings:** Add logout button in Settings page.

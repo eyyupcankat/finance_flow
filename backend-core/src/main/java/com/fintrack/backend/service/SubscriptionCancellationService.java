@@ -7,6 +7,7 @@ import com.fintrack.backend.entity.Subscription;
 import com.fintrack.backend.entity.SubscriptionStatus;
 import com.fintrack.backend.exception.ResourceNotFoundException;
 import com.fintrack.backend.repository.SubscriptionRepository;
+import com.fintrack.backend.repository.UserCancellationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class SubscriptionCancellationService {
 
     private final WebClient mockBankWebClient;
     private final SubscriptionRepository subscriptionRepository;
+
+    private final UserCancellationRepository userCancellationRepository;
 
     public SubscriptionResponse cancelSubscription(Long subscriptionId, Long userId) {
         Subscription subscription = subscriptionRepository.findByIdAndUserId(subscriptionId, userId)
@@ -37,6 +40,14 @@ public class SubscriptionCancellationService {
                 .retrieve()
                 .bodyToMono(MockBankCancelResponse.class)
                 .block();
+
+        // Persist cancellation for this user/merchant even if card is re-linked
+        if (!userCancellationRepository.existsByUserIdAndMerchantName(userId, subscription.getName())) {
+            userCancellationRepository.save(com.fintrack.backend.entity.UserCancellation.builder()
+                    .user(subscription.getUser())
+                    .merchantName(subscription.getName())
+                    .build());
+        }
 
         subscription.setStatus(SubscriptionStatus.CANCELLED);
         return SubscriptionResponse.from(subscriptionRepository.save(subscription));

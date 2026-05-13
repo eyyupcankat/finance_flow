@@ -130,15 +130,17 @@ export default function CardIntegrationPage() {
                 <p className="text-sm text-gray-400">Main source for detection</p>
               </div>
             </div>
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              Active
+            <span className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${cards.length > 0 ? 'text-emerald-600 bg-emerald-50' : 'text-gray-500 bg-gray-50'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${cards.length > 0 ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+              {cards.length > 0 ? 'Active' : 'Inactive'}
             </span>
           </div>
 
           <div className="flex items-center justify-between mt-8 pt-4 border-t border-gray-100">
             <div className="flex items-center gap-4">
-              <button className="text-sm text-gray-500 font-medium hover:text-gray-700">Connection Status: Healthy</button>
+              <button className={`text-sm font-medium transition-colors ${cards.length > 0 ? 'text-gray-500 hover:text-gray-700' : 'text-amber-600'}`}>
+                {cards.length > 0 ? 'Connection Status: Healthy' : 'No Active Connection'}
+              </button>
             </div>
             <p className="text-xs text-gray-400">Linked Cards: {cards.length}</p>
           </div>

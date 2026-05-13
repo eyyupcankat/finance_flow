@@ -7,6 +7,7 @@ import com.fintrack.backend.entity.User;
 import com.fintrack.backend.entity.VirtualCard;
 import com.fintrack.backend.exception.ResourceNotFoundException;
 import com.fintrack.backend.repository.SubscriptionRepository;
+import com.fintrack.backend.repository.UserCancellationRepository;
 import com.fintrack.backend.repository.UserRepository;
 import com.fintrack.backend.repository.VirtualCardRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SubscriptionAnalysisService {
     private final VirtualCardRepository cardRepository;
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
+    private final UserCancellationRepository userCancellationRepository;
 
     public List<SubscriptionResponse> analyzeCard(Long cardId, Long userId) {
         User user = userRepository.findById(userId)
@@ -39,6 +41,11 @@ public class SubscriptionAnalysisService {
                 .filter(t -> Boolean.TRUE.equals(t.isRecurring()))
                 .filter(t -> !subscriptionRepository.existsByCardIdAndName(cardId, t.merchant()))
                 .forEach(t -> {
+                    com.fintrack.backend.entity.SubscriptionStatus status = com.fintrack.backend.entity.SubscriptionStatus.ACTIVE;
+                    if (userCancellationRepository.existsByUserIdAndMerchantName(userId, t.merchant())) {
+                        status = com.fintrack.backend.entity.SubscriptionStatus.CANCELLED;
+                    }
+
                     Subscription subscription = Subscription.builder()
                             .user(user)
                             .card(card)
@@ -46,6 +53,7 @@ public class SubscriptionAnalysisService {
                             .amount(t.amount() != null ? t.amount() : BigDecimal.ZERO)
                             .currency(t.currency() != null ? t.currency() : "USD")
                             .billingCycle("MONTHLY")
+                            .status(status)
                             .build();
                     subscriptionRepository.save(subscription);
                 });
