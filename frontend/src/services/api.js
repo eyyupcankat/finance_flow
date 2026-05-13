@@ -51,4 +51,9 @@ export const dashboardService = {
   getAnalytics: (timeframe) => api.get(`/analytics?timeframe=${timeframe || 'Monthly'}`)
 }
 
+export const userService = {
+  getSettings: () => api.get('/user/settings'),
+  updateSettings: (data) => api.put('/user/settings', data),
+}
+
 export default api

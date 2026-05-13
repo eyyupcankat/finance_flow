@@ -36,6 +36,27 @@ public class User {
     @Column(name = "password_hash")
     private String passwordHash;
 
+    // Profile Info
+    private String jobTitle;
+    private String location;
+
+    // App Preferences
+    @Builder.Default
+    @Column(name = "dark_mode", nullable = false, columnDefinition = "boolean default false")
+    private Boolean darkMode = false;
+
+    @Builder.Default
+    @Column(name = "email_alerts", nullable = false, columnDefinition = "boolean default true")
+    private Boolean emailAlerts = true;
+
+    @Builder.Default
+    @Column(name = "desktop_notify", nullable = false, columnDefinition = "boolean default true")
+    private Boolean desktopNotify = true;
+
+    @Builder.Default
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'USD ($)'")
+    private String currency = "USD ($)";
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

@@ -100,8 +100,8 @@
 - [x] **Subscriptions:** Fix UI state to instantly reflect "Cancelled" status upon successful cancellation without needing a manual refresh.
 - [x] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*
 
-- [ ] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
-- [ ] **Settings:** Add logout button in Settings page.
+- [x] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
+- [x] **Settings:** Add logout button in Settings page.
 - [ ] **Settings (Security):** Make "Update Password" functional (needs backend `POST /api/user/change-password` and frontend validation).
 - [ ] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
 - [ ] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".

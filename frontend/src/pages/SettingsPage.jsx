@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { User, Shield, ChevronDown, Monitor, Laptop } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { User, Shield, ChevronDown, Monitor, Laptop, Loader2, LogOut } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { userService } from '../services/api'
 
 function Toggle({ checked, onChange }) {
   return (
@@ -16,32 +17,94 @@ function Toggle({ checked, onChange }) {
 }
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth()
+  const { user, logout, updateUser } = useAuth()
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   const [profile, setProfile] = useState({
-    name: user?.name || 'Alexander Sterling',
-    email: user?.email || 'alexander.s@financeflow.io',
-    jobTitle: 'Financial Analyst',
-    location: 'San Francisco, CA',
+    name: '',
+    email: '',
+    jobTitle: '',
+    location: '',
   })
   const [prefs, setPrefs] = useState({ darkMode: false, emailAlerts: true, desktopNotify: true })
   const [currency, setCurrency] = useState('USD ($)')
   const [passwords, setPasswords] = useState({ current: '', next: '' })
-  const [saved, setSaved] = useState(false)
 
-  const handleSave = () => {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setLoading(true)
+        const res = await userService.getSettings()
+        const data = res.data
+        setProfile({
+          name: data.name || '',
+          email: data.email || '',
+          jobTitle: data.jobTitle || '',
+          location: data.location || ''
+        })
+        setPrefs({
+          darkMode: data.darkMode,
+          emailAlerts: data.emailAlerts,
+          desktopNotify: data.desktopNotify
+        })
+        setCurrency(data.currency || 'USD ($)')
+      } catch (err) {
+        console.error('Failed to fetch settings', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSettings()
+  }, [])
+
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      const res = await userService.updateSettings({
+        ...profile,
+        ...prefs,
+        currency
+      })
+      // Update global auth state to sync name in sidebar/dashboard
+      updateUser({ name: profile.name, email: profile.email })
+      
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch (err) {
+      console.error('Failed to save settings', err)
+      alert('Failed to save settings')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleProfileChange = (e) =>
     setProfile((prev) => ({ ...prev, [e.target.name]: e.target.value }))
 
+  if (loading) {
+    return (
+      <div className="flex h-[400px] items-center justify-center">
+        <Loader2 className="animate-spin text-emerald-500 w-8 h-8" />
+      </div>
+    )
+  }
+
   return (
-    <div className="max-w-4xl space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Manage your profile information and account security preferences.</p>
+    <div className="max-w-4xl space-y-5 pb-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Manage your profile information and account security preferences.</p>
+        </div>
+        <button
+          onClick={logout}
+          className="flex items-center gap-2 px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-50 transition-colors"
+        >
+          <LogOut size={16} />
+          Log Out
+        </button>
       </div>
 
       <div className="grid grid-cols-5 gap-5">
@@ -102,9 +165,10 @@ export default function SettingsPage() {
           <div className="flex justify-end mt-4">
             <button
               onClick={handleSave}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors"
+              disabled={saving}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors flex items-center gap-2 min-w-[120px] justify-center disabled:opacity-70"
             >
-              {saved ? '✓ Saved!' : 'Save Changes'}
+              {saving ? <Loader2 size={16} className="animate-spin" /> : (saved ? '✓ Saved!' : 'Save Changes')}
             </button>
           </div>
         </div>
