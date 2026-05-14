@@ -101,6 +101,13 @@
 - [x] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*
 
 - [x] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
+- [ ] **Settings (Fix):** Investigate and fix why App Preferences (Dark Mode, Currency, etc.) are not correctly persisting in the database across sessions.
+- [ ] **Settings (UX):** Implement "Save-on-change" behavior for all preferences (toggles and dropdowns), removing the need for a manual "Save Changes" button in the Preferences section.
+- [ ] **Settings (Notifications):** Remove "Desktop Notification" option. Focus on "Email Alerts" and the existing in-app Notification Inbox.
+- [ ] **Settings (Dark Mode):** Implement full Dark Mode support using Tailwind `dark:` classes, synchronized with user backend preference.
+- [ ] **Settings (Currency - Advanced):** 
+    - [ ] Implement `CurrencyConversionService` in Backend Core using a real/simulated exchange rate API.
+    - [ ] Update all financial views (Dashboard Summary, Subscriptions List, Analytics) to dynamically convert and display values based on the user's selected currency.
 - [x] **Settings:** Add logout button in Settings page.
 - [ ] **Settings (Security):** Make "Update Password" functional (needs backend `POST /api/user/change-password` and frontend validation).
 - [ ] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
@@ -113,3 +120,12 @@
 - [x] **Register (Kayıt) Akışı**: `/register` sayfasında form gönderildiğinde 500 hatası alınıyordu. Backend logları incelendi, veritabanı bağlantı havuzu (HikariCP) ile ilgili geçici bir asılı kalma (transient state) durumu tespit edildi. Backend yeniden başlatılarak ve bağlantılar sıfırlanarak sorun giderildi. Şu anda başarılı bir şekilde 201 Created ve JWT dönüyor.
 - [x] **Login (Giriş) Akışı**: Aynı nedenden dolayı alınan 500 hatası çözüldü. Şu anda doğru kimlik bilgileriyle 200 OK ve JWT token başarıyla alınıyor.
 - [x] **Sonuç**: Backend'deki asılı kalan process kill edilip yeniden başlatıldı. DB şema uyumsuzlukları ve JWT oluşturma aşamaları test edildi; herhangi bir kod veya konfigürasyon hatası bulunmadı. Doğrudan API üzerinden ve frontend üzerinden sorunsuz çalışıyor.
+
+## Phase 6: Advanced Improvements (Future Scope)
+- [ ] **Security:** Migrate JWT storage from `localStorage` to **HttpOnly Cookies** to prevent XSS-based token theft.
+- [ ] **Performance (Caching):** Implement **Redis** or Spring Cache for storing frequently accessed exchange rates and user subscription summaries.
+- [ ] **Stability (Rate Limiting):** Implement **Spring Security Rate Limiter** or Bucket4j to protect auth endpoints (login/register) from brute-force attacks.
+- [ ] **Database Optimization:** Add **DB Indexes** to frequently queried columns like `user_id`, `card_number`, and `transaction_date` for faster data retrieval.
+- [ ] **Reliability (Async Tasks):** Use a **Message Queue** (e.g., RabbitMQ or simple Spring `@Async`) for handling non-blocking tasks like sending Email Alerts.
+- [ ] **Infrastructure:** Prepare the app for **Load Balancing** (Nginx) and containerization with **Docker** for production readiness.
+
