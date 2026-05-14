@@ -31,6 +31,7 @@ api.interceptors.response.use(
 export const authService = {
   login: (data) => api.post('/auth/login', data),
   register: (data) => api.post('/auth/register', data),
+  verify2FA: (data) => api.post('/auth/verify-2fa', data),
 }
 
 export const cardService = {
@@ -55,6 +56,7 @@ export const userService = {
   getSettings: () => api.get('/user/settings'),
   updateSettings: (data) => api.put('/user/settings', data),
   changePassword: (data) => api.post('/user/change-password', data),
+  toggle2FA: () => api.post('/user/2fa/toggle'),
 }
 
 export default api

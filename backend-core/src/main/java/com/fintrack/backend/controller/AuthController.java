@@ -29,6 +29,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/verify-2fa")
+    public ResponseEntity<AuthResponse> verifyMfa(@RequestBody com.fintrack.backend.dto.VerifyMfaRequest request) {
+        return ResponseEntity.ok(authService.verifyMfa(request));
+    }
+
     @GetMapping("/oauth2/google")
     public ResponseEntity<Void> googleOAuth2() {
         return ResponseEntity.status(HttpStatus.FOUND)

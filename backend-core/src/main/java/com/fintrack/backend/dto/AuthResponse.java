@@ -9,5 +9,7 @@ public record AuthResponse(
         String location,
         boolean darkMode,
         boolean emailAlerts,
-        String currency
+        String currency,
+        boolean twoFactorEnabled,
+        boolean mfaRequired
 ) {}

@@ -28,6 +28,12 @@ public class UserController {
         return ResponseEntity.ok(userService.updateSettings(principal.getId(), request));
     }
 
+    @PostMapping("/2fa/toggle")
+    public ResponseEntity<?> toggleTwoFactor(@AuthenticationPrincipal UserPrincipal principal) {
+        userService.toggleTwoFactor(principal.getId());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(
             @AuthenticationPrincipal UserPrincipal principal,

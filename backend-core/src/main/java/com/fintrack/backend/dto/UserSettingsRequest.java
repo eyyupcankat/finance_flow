@@ -7,5 +7,6 @@ public record UserSettingsRequest(
         String location,
         boolean darkMode,
         boolean emailAlerts,
-        String currency
+        String currency,
+        boolean twoFactorEnabled
 ) {}

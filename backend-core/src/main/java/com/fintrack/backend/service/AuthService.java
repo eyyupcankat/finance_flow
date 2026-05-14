@@ -42,7 +42,9 @@ public class AuthService {
                 user.getLocation(),
                 user.getDarkMode(),
                 user.getEmailAlerts(),
-                user.getCurrency()
+                user.getCurrency(),
+                user.getTwoFactorEnabled(),
+                false // mfaRequired is false for registration
         );
     }
 
@@ -53,6 +55,24 @@ public class AuthService {
         if (user.getPasswordHash() == null || !passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
+
+        if (Boolean.TRUE.equals(user.getTwoFactorEnabled())) {
+            // For now, we don't return a token and signal MFA is required
+            return new AuthResponse(
+                    null, 
+                    user.getId(), 
+                    user.getName(), 
+                    user.getEmail(),
+                    user.getJobTitle(),
+                    user.getLocation(),
+                    user.getDarkMode(),
+                    user.getEmailAlerts(),
+                    user.getCurrency(),
+                    true, // twoFactorEnabled
+                    true  // mfaRequired
+            );
+        }
+
         String token = jwtUtil.generateToken(user.getId(), user.getEmail());
         return new AuthResponse(
                 token, 
@@ -63,7 +83,35 @@ public class AuthService {
                 user.getLocation(),
                 user.getDarkMode(),
                 user.getEmailAlerts(),
-                user.getCurrency()
+                user.getCurrency(),
+                false, // twoFactorEnabled (or the actual value, but if we are here it's false or we skipped it)
+                false  // mfaRequired
+        );
+    }
+
+    public AuthResponse verifyMfa(com.fintrack.backend.dto.VerifyMfaRequest request) {
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        // In a real app, we would check a TOTP code or a code sent via email/SMS.
+        // For demonstration, we use a mock code: 123456
+        if (!"123456".equals(request.code())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid verification code");
+        }
+
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        return new AuthResponse(
+                token, 
+                user.getId(), 
+                user.getName(), 
+                user.getEmail(),
+                user.getJobTitle(),
+                user.getLocation(),
+                user.getDarkMode(),
+                user.getEmailAlerts(),
+                user.getCurrency(),
+                true, // twoFactorEnabled
+                false // mfaRequired is now false
         );
     }
 }

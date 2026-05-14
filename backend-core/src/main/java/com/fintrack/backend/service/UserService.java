@@ -36,8 +36,17 @@ public class UserService {
         user.setDarkMode(request.darkMode());
         user.setEmailAlerts(request.emailAlerts());
         user.setCurrency(request.currency());
+        user.setTwoFactorEnabled(request.twoFactorEnabled());
 
         return UserSettingsResponse.from(userRepository.save(user));
+    }
+
+    @Transactional
+    public void toggleTwoFactor(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
+        user.setTwoFactorEnabled(!user.getTwoFactorEnabled());
+        userRepository.save(user);
     }
 
     @Transactional

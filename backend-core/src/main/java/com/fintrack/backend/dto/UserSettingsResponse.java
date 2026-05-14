@@ -10,7 +10,8 @@ public record UserSettingsResponse(
         String location,
         boolean darkMode,
         boolean emailAlerts,
-        String currency
+        String currency,
+        boolean twoFactorEnabled
 ) {
     public static UserSettingsResponse from(User user) {
         return new UserSettingsResponse(
@@ -21,7 +22,8 @@ public record UserSettingsResponse(
                 user.getLocation(),
                 user.getDarkMode(),
                 user.getEmailAlerts(),
-                user.getCurrency()
+                user.getCurrency(),
+                user.getTwoFactorEnabled()
         );
     }
 }

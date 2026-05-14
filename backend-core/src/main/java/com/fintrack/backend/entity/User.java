@@ -53,6 +53,10 @@ public class User {
     @Column(nullable = false, columnDefinition = "varchar(20) default 'USD ($)'")
     private String currency = "USD ($)";
 
+    @Builder.Default
+    @Column(name = "two_factor_enabled", nullable = false, columnDefinition = "boolean default false")
+    private Boolean twoFactorEnabled = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

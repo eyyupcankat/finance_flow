@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/auth/login",
                     "/api/auth/register",
+                    "/api/auth/verify-2fa",
                     "/error",
                     "/login/oauth2/**",
                     "/oauth2/**"

@@ -30,7 +30,7 @@ export default function SettingsPage() {
     jobTitle: '',
     location: '',
   })
-  const [prefs, setPrefs] = useState({ darkMode: false, emailAlerts: true })
+  const [prefs, setPrefs] = useState({ darkMode: false, emailAlerts: true, twoFactorEnabled: false })
   const [currency, setCurrency] = useState('USD ($)')
   const [passwords, setPasswords] = useState({ current: '', next: '' })
   const [showPasswords, setShowPasswords] = useState({ current: false, next: false })
@@ -50,7 +50,8 @@ export default function SettingsPage() {
         })
         setPrefs({
           darkMode: data.darkMode,
-          emailAlerts: data.emailAlerts
+          emailAlerts: data.emailAlerts,
+          twoFactorEnabled: data.twoFactorEnabled
         })
         setCurrency(data.currency || 'USD ($)')
       } catch (err) {
@@ -136,6 +137,24 @@ export default function SettingsPage() {
       setPasswords({ current: '', next: '' })
     } catch (err) {
       setFeedback({ type: 'error', message: err.response?.data?.message || 'Failed to update password' })
+    } finally {
+      setSaving(false)
+      setTimeout(() => setFeedback(null), 3000)
+    }
+  }
+
+  const handleToggle2FA = async () => {
+    try {
+      setSaving(true)
+      await userService.toggle2FA()
+      const newVal = !prefs.twoFactorEnabled
+      setPrefs(p => ({ ...p, twoFactorEnabled: newVal }))
+      setFeedback({ 
+        type: 'success', 
+        message: newVal ? '2FA enabled successfully!' : '2FA disabled successfully!' 
+      })
+    } catch (err) {
+      setFeedback({ type: 'error', message: 'Failed to update 2FA status' })
     } finally {
       setSaving(false)
       setTimeout(() => setFeedback(null), 3000)
@@ -348,15 +367,37 @@ export default function SettingsPage() {
 
           <div>
             <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Authentication</p>
-            <div className="p-4 bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-xl">
+            <div className={`p-4 border rounded-xl transition-colors ${
+              prefs.twoFactorEnabled 
+                ? 'bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800' 
+                : 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+            }`}>
               <div className="flex items-center gap-2 mb-1">
-                <Shield size={16} className="text-emerald-600" />
-                <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Two-Factor Auth is On</p>
+                <Shield size={16} className={prefs.twoFactorEnabled ? "text-emerald-600" : "text-gray-400"} />
+                <p className={`text-sm font-semibold ${
+                  prefs.twoFactorEnabled ? "text-emerald-700 dark:text-emerald-400" : "text-gray-600 dark:text-gray-400"
+                }`}>
+                  {prefs.twoFactorEnabled ? 'Two-Factor Auth is On' : 'Two-Factor Auth is Off'}
+                </p>
               </div>
-              <p className="text-xs text-emerald-600 dark:text-emerald-500">Your account is protected with a secondary verification layer.</p>
+              <p className={`text-xs ${
+                prefs.twoFactorEnabled ? "text-emerald-600 dark:text-emerald-500" : "text-gray-400 dark:text-gray-500"
+              }`}>
+                {prefs.twoFactorEnabled 
+                  ? 'Your account is protected with a secondary verification layer.' 
+                  : 'Add an extra layer of security to your account.'}
+              </p>
             </div>
-            <button className="mt-3 w-full py-2 text-sm font-medium text-red-500 border border-red-200 dark:border-red-900 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition">
-              Disable 2FA
+            <button 
+              onClick={handleToggle2FA}
+              disabled={saving}
+              className={`mt-3 w-full py-2 text-sm font-medium border rounded-lg transition disabled:opacity-50 ${
+                prefs.twoFactorEnabled
+                  ? 'text-red-500 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950'
+                  : 'text-emerald-600 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950'
+              }`}
+            >
+              {saving ? 'Processing...' : (prefs.twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA')}
             </button>
           </div>
 
