@@ -14,14 +14,14 @@ export default function Sidebar() {
   const { logout } = useAuth()
 
   return (
-    <aside className="w-52 bg-white border-r border-gray-200 flex flex-col shrink-0 h-full">
-      <div className="px-4 py-5 flex items-center gap-2.5 border-b border-gray-100">
+    <aside className="w-52 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0 h-full">
+      <div className="px-4 py-5 flex items-center gap-2.5 border-b border-gray-100 dark:border-gray-800">
         <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center shrink-0">
           <TrendingUp size={18} className="text-white" />
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 leading-none">FinTrack</p>
-          <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5">Modern Analytics</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">FinTrack</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-0.5">Modern Analytics</p>
         </div>
       </div>
 
@@ -31,10 +31,9 @@ export default function Sidebar() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-emerald-500 text-white'
-                  : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
+                ? 'bg-emerald-500 text-white'
+                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-800 dark:hover:text-gray-100'
               }`
             }
           >

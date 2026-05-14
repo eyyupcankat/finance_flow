@@ -19,7 +19,7 @@ export default function UpgradePage() {
             </div>
             <p className="mt-2 text-sm text-gray-500">Perfect for individuals starting out.</p>
           </div>
-          
+
           <ul className="space-y-4 mb-8 flex-1">
             <li className="flex items-center gap-3">
               <Check size={18} className="text-emerald-500" />
@@ -53,7 +53,7 @@ export default function UpgradePage() {
           <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-400 to-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider py-1 px-3 rounded-bl-lg">
             Recommended
           </div>
-          
+
           <div className="mb-6">
             <h2 className="text-xl font-bold text-white">Pro Plan</h2>
             <div className="mt-4 flex items-baseline text-4xl font-extrabold text-white">
@@ -62,7 +62,7 @@ export default function UpgradePage() {
             </div>
             <p className="mt-2 text-sm text-gray-400">For power users who want full control.</p>
           </div>
-          
+
           <ul className="space-y-4 mb-8 flex-1">
             <li className="flex items-center gap-3">
               <Check size={18} className="text-emerald-400" />

@@ -41,7 +41,7 @@ class AuthControllerTest {
     @Test
     void register_success() throws Exception {
         RegisterRequest request = new RegisterRequest("Test", "test@example.com", "password");
-        AuthResponse response = new AuthResponse("token123", 1L, "Test", "test@example.com");
+        AuthResponse response = new AuthResponse("token123", 1L, "Test", "test@example.com", null, null, false, true, "USD ($)");
 
         when(authService.register(any(RegisterRequest.class))).thenReturn(response);
 
@@ -56,7 +56,7 @@ class AuthControllerTest {
     @Test
     void login_success() throws Exception {
         LoginRequest request = new LoginRequest("test@example.com", "password");
-        AuthResponse response = new AuthResponse("token123", 1L, "Test", "test@example.com");
+        AuthResponse response = new AuthResponse("token123", 1L, "Test", "test@example.com", null, null, false, true, "USD ($)");
 
         when(authService.login(any(LoginRequest.class))).thenReturn(response);
 

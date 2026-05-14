@@ -101,10 +101,10 @@
 - [x] **Subscriptions:** Ensure persistent cancellation state; if a card is re-linked, cancelled subscriptions should still show as "Cancelled" in Subscriptions page (but stay hidden in Dashboard Recent Preview). *Note: Ensure this doesn't break card deletion.*
 
 - [x] **Settings:** Fix hardcoded profile data and ensure App Preferences persist changes to the database.
-- [ ] **Settings (Fix):** Investigate and fix why App Preferences (Dark Mode, Currency, etc.) are not correctly persisting in the database across sessions.
-- [ ] **Settings (UX):** Implement "Save-on-change" behavior for all preferences (toggles and dropdowns), removing the need for a manual "Save Changes" button in the Preferences section.
-- [ ] **Settings (Notifications):** Remove "Desktop Notification" option. Focus on "Email Alerts" and the existing in-app Notification Inbox.
-- [ ] **Settings (Dark Mode):** Implement full Dark Mode support using Tailwind `dark:` classes, synchronized with user backend preference.
+- [x] **Settings (Fix):** Investigate and fix why App Preferences (Dark Mode, Currency, etc.) are not correctly persisting in the database across sessions. (Fixed by expanding AuthResponse and ensuring full sync between Frontend and Backend).
+- [x] **Settings (UX):** Implement "Save-on-change" behavior for all preferences (toggles and dropdowns), removing the need for a manual "Save Changes" button in the Preferences section.
+- [x] **Settings (Notifications):** Remove "Desktop Notification" option. Focus on "Email Alerts" and the existing in-app Notification Inbox.
+- [x] **Settings (Dark Mode):** Implement full Dark Mode support using Tailwind `dark:` classes, synchronized with user backend preference.
 - [ ] **Settings (Currency - Advanced):** 
     - [ ] Implement `CurrencyConversionService` in Backend Core using a real/simulated exchange rate API.
     - [ ] Update all financial views (Dashboard Summary, Subscriptions List, Analytics) to dynamically convert and display values based on the user's selected currency.

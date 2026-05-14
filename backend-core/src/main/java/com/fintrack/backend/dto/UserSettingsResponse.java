@@ -10,7 +10,6 @@ public record UserSettingsResponse(
         String location,
         boolean darkMode,
         boolean emailAlerts,
-        boolean desktopNotify,
         String currency
 ) {
     public static UserSettingsResponse from(User user) {
@@ -22,7 +21,6 @@ public record UserSettingsResponse(
                 user.getLocation(),
                 user.getDarkMode(),
                 user.getEmailAlerts(),
-                user.getDesktopNotify(),
                 user.getCurrency()
         );
     }

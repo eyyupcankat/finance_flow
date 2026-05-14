@@ -59,7 +59,7 @@ export default function SubscriptionsPage() {
     const active = subs.filter(s => s.status !== 'CANCELLED')
     const cancelled = subs.filter(s => s.status === 'CANCELLED')
     const totalMonthly = active.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0)
-    
+
     return {
       activeCount: active.length,
       cancelledCount: cancelled.length,
@@ -72,52 +72,52 @@ export default function SubscriptionsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subscriptions</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Managing {stats.activeCount} active subscriptions.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Subscriptions</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Managing {stats.activeCount} active subscriptions.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={loadSubscriptions} className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
+          <button onClick={loadSubscriptions} className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
             Refresh
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
           <div className="flex items-start justify-between mb-2">
-            <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950 rounded-xl flex items-center justify-center">
               <TrendingUp size={18} className="text-emerald-600" />
             </div>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Monthly Spending (Active)</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">${stats.totalMonthly.toFixed(2)}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Monthly Spending (Active)</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">${stats.totalMonthly.toFixed(2)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
           <div className="flex items-start justify-between mb-2">
-            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-50 dark:bg-blue-950 rounded-xl flex items-center justify-center">
               <Calendar size={18} className="text-blue-600" />
             </div>
-            <span className="text-xs text-gray-400">Next 7 days</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">Next 7 days</span>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Active Subscriptions</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{stats.activeCount} Services</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Active Subscriptions</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">{stats.activeCount} Services</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
           <div className="flex items-start justify-between mb-2">
-            <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-amber-50 dark:bg-amber-950 rounded-xl flex items-center justify-center">
               <AlertTriangle size={18} className="text-amber-500" />
             </div>
             <span className="text-xs font-semibold text-amber-600">Action needed</span>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Cancelled / Inactive</p>
-          <p className="text-2xl font-bold text-gray-900 mt-0.5">{stats.cancelledCount} Services</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Cancelled / Inactive</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">{stats.cancelledCount} Services</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200">
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <h3 className="text-sm font-semibold text-gray-800">All Subscriptions</h3>
-          <div className="flex items-center gap-3 text-xs text-gray-400">
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100">All Subscriptions</h3>
+          <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
             <span className="flex items-center gap-1"><span className="w-2 h-2 bg-emerald-500 rounded-full" />Active</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 bg-red-400 rounded-full" />Cancelled</span>
           </div>
@@ -128,14 +128,14 @@ export default function SubscriptionsPage() {
             <Loader2 className="animate-spin text-emerald-500" size={24} />
           </div>
         ) : subs.length === 0 ? (
-          <div className="text-center py-10 text-gray-500 text-sm">
+          <div className="text-center py-10 text-gray-500 dark:text-gray-400 text-sm">
             No subscriptions found. Go to Card Integration to detect them.
           </div>
         ) : (
           <>
             <table className="w-full">
               <thead>
-                <tr className="text-xs text-gray-400 border-t border-b border-gray-100">
+                <tr className="text-xs text-gray-400 dark:text-gray-500 border-t border-b border-gray-100 dark:border-gray-800">
                   <th className="text-left px-5 py-3 font-medium uppercase tracking-wide">Service</th>
                   <th className="text-left px-3 py-3 font-medium uppercase tracking-wide">Status</th>
                   <th className="text-left px-3 py-3 font-medium uppercase tracking-wide">Billing Cycle</th>
@@ -143,48 +143,48 @@ export default function SubscriptionsPage() {
                   <th className="px-3 py-3" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                 {subs.map((sub, i) => {
                   const icon = ICONS[sub.name] || { bg: 'bg-indigo-500', initial: sub.name[0] }
                   const isActive = sub.status !== 'CANCELLED'
                   return (
-                    <tr key={sub.id} className={`transition relative ${isActive ? 'hover:bg-gray-50' : 'bg-gray-50 opacity-70'}`}>
+                    <tr key={sub.id} className={`transition relative ${isActive ? 'hover:bg-gray-50 dark:hover:bg-gray-800' : 'bg-gray-50 dark:bg-gray-800/50 opacity-70'}`}>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
                           <div className={`w-9 h-9 ${icon.bg} rounded-xl flex items-center justify-center`}>
                             <span className="text-white text-xs font-bold">{icon.initial}</span>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-gray-800">{sub.name}</p>
-                            <p className="text-xs text-gray-400">Detected on Card #{sub.cardId}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{sub.name}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500">Detected on Card #{sub.cardId}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-3 py-4">
-                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${isActive ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400'}`}>
                           {isActive ? 'Active' : 'Cancelled'}
                         </span>
                       </td>
-                      <td className="px-3 py-4 text-sm text-gray-600">{sub.billingCycle}</td>
+                      <td className="px-3 py-4 text-sm text-gray-600 dark:text-gray-400">{sub.billingCycle}</td>
                       <td className="px-5 py-4 text-right">
-                        <p className="text-sm font-semibold text-gray-800">${sub.amount?.toFixed(2)}</p>
-                        <p className="text-xs text-gray-400">{sub.currency}</p>
+                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">${sub.amount?.toFixed(2)}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">{sub.currency}</p>
                       </td>
                       <td className="px-3 py-4 relative text-right">
                         {isActive && (
                           <>
                             <button
                               onClick={() => setOpenMenu(openMenu === i ? null : i)}
-                              className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg"
+                              className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
                             >
                               <MoreVertical size={16} />
                             </button>
                             {openMenu === i && (
-                              <div className="absolute right-3 top-10 bg-white border border-gray-200 rounded-xl shadow-lg z-10 py-1 w-40 text-left">
+                              <div className="absolute right-3 top-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-10 py-1 w-40 text-left">
                                 <button
                                   onClick={() => handleCancel(sub.id, i)}
                                   disabled={cancellingId === sub.id}
-                                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center justify-between"
+                                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950 flex items-center justify-between"
                                 >
                                   {cancellingId === sub.id ? 'Cancelling...' : 'Cancel Subscription'}
                                 </button>
@@ -198,8 +198,8 @@ export default function SubscriptionsPage() {
                 })}
               </tbody>
             </table>
-            <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100">
-              <p className="text-xs text-gray-400">Showing {subs.length} subscriptions</p>
+            <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 dark:border-gray-800">
+              <p className="text-xs text-gray-400 dark:text-gray-500">Showing {subs.length} subscriptions</p>
             </div>
           </>
         )}

@@ -32,7 +32,6 @@ public class UserService {
         user.setLocation(request.location());
         user.setDarkMode(request.darkMode());
         user.setEmailAlerts(request.emailAlerts());
-        user.setDesktopNotify(request.desktopNotify());
         user.setCurrency(request.currency());
 
         return UserSettingsResponse.from(userRepository.save(user));

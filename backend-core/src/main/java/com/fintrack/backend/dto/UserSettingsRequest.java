@@ -7,6 +7,5 @@ public record UserSettingsRequest(
         String location,
         boolean darkMode,
         boolean emailAlerts,
-        boolean desktopNotify,
         String currency
 ) {}

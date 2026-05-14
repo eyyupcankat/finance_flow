@@ -46,9 +46,9 @@ export default function CardIntegrationPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await cardService.addCard({ 
-        cardNumber: cleanCardNumber, 
-        label: selectedBank.name 
+      const res = await cardService.addCard({
+        cardNumber: cleanCardNumber,
+        label: selectedBank.name
       })
       setCards([...cards, res.data])
       setShowAdd(false)
@@ -96,9 +96,8 @@ export default function CardIntegrationPage() {
     <div className="space-y-5 relative">
       {/* Toast Notification */}
       {feedback && (
-        <div className={`fixed top-20 right-6 z-[100] px-6 py-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-in slide-in-from-right-full ${
-          feedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
-        }`}>
+        <div className={`fixed top-20 right-6 z-[100] px-6 py-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-in slide-in-from-right-full ${feedback.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-800'
+          }`}>
           {feedback.type === 'success' ? <Check size={18} className="text-emerald-500" /> : <AlertCircle size={18} className="text-red-500" />}
           <span className="font-medium">{feedback.message}</span>
         </div>
@@ -106,8 +105,8 @@ export default function CardIntegrationPage() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Card Integration</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Manage your connected financial instruments and sync preferences.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Card Integration</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Manage your connected financial instruments and sync preferences.</p>
         </div>
         <button
           onClick={() => { setShowAdd(true); setError(''); setNewCard(''); setSelectedBank(null) }}
@@ -119,30 +118,30 @@ export default function CardIntegrationPage() {
       </div>
 
       <div className="grid grid-cols-5 gap-5">
-        <div className="col-span-3 bg-white rounded-xl border border-gray-200 p-6">
+        <div className="col-span-3 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-950 rounded-xl flex items-center justify-center">
                 <Building2 size={22} className="text-blue-600" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Primary Bank Account</h2>
-                <p className="text-sm text-gray-400">Main source for detection</p>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Primary Bank Account</h2>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Main source for detection</p>
               </div>
             </div>
-            <span className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${cards.length > 0 ? 'text-emerald-600 bg-emerald-50' : 'text-gray-500 bg-gray-50'}`}>
+            <span className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full ${cards.length > 0 ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950' : 'text-gray-500 bg-gray-50 dark:bg-gray-800'}`}>
               <span className={`w-1.5 h-1.5 rounded-full ${cards.length > 0 ? 'bg-emerald-500' : 'bg-gray-400'}`} />
               {cards.length > 0 ? 'Active' : 'Inactive'}
             </span>
           </div>
 
-          <div className="flex items-center justify-between mt-8 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between mt-8 pt-4 border-t border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-4">
-              <button className={`text-sm font-medium transition-colors ${cards.length > 0 ? 'text-gray-500 hover:text-gray-700' : 'text-amber-600'}`}>
+              <button className={`text-sm font-medium transition-colors ${cards.length > 0 ? 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' : 'text-amber-600'}`}>
                 {cards.length > 0 ? 'Connection Status: Healthy' : 'No Active Connection'}
               </button>
             </div>
-            <p className="text-xs text-gray-400">Linked Cards: {cards.length}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Linked Cards: {cards.length}</p>
           </div>
         </div>
 
@@ -157,7 +156,7 @@ export default function CardIntegrationPage() {
             </p>
           </div>
 
-          <button 
+          <button
             onClick={() => showFeedback('Credential management is only available for Enterprise accounts.', 'error')}
             className="mt-5 w-full bg-white text-gray-900 text-sm font-semibold py-2.5 rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
           >
@@ -167,39 +166,39 @@ export default function CardIntegrationPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <h3 className="text-sm font-semibold text-gray-800 mb-4 text-center">Connected Cards</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
+        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">Connected Cards</h3>
         <div className="space-y-3">
           {cards.length === 0 ? (
-            <p className="text-sm text-gray-500 text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+            <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
               No cards connected yet. Start by linking a card.
             </p>
           ) : (
             <div className="grid grid-cols-2 gap-3">
               {cards.map((card) => (
-                <div key={card.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition group">
+                <div key={card.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition group">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-950 rounded-xl flex items-center justify-center">
                       <Building2 size={18} className="text-emerald-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-800 leading-none">{card.label}</p>
-                      <p className="text-xs text-gray-400 mt-1 font-mono tracking-tight">{maskCard(card.cardNumber)}</p>
+                      <p className="text-sm font-bold text-gray-800 dark:text-gray-100 leading-none">{card.label}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-mono tracking-tight">{maskCard(card.cardNumber)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
+                    <button
                       onClick={() => handleDetect(card.id)}
                       disabled={detectingId === card.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900 rounded-lg transition disabled:opacity-50"
                       title="Sync Subscriptions"
                     >
                       {detectingId === card.id ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
                       Detect
                     </button>
-                    <button 
-                      onClick={() => handleDeleteCard(card.id)} 
-                      className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                    <button
+                      onClick={() => handleDeleteCard(card.id)}
+                      className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition"
                       title="Remove Card"
                     >
                       <X size={16} />
@@ -212,7 +211,7 @@ export default function CardIntegrationPage() {
 
           <button
             onClick={() => { setShowAdd(true); setError(''); setNewCard(''); setSelectedBank(null) }}
-            className="w-full flex flex-col items-center justify-center gap-2 py-6 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50/30 transition-all mt-2"
+            className="w-full flex flex-col items-center justify-center gap-2 py-6 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-gray-400 hover:border-emerald-300 hover:text-emerald-500 hover:bg-emerald-50/30 dark:hover:bg-emerald-950/30 transition-all mt-2"
           >
             <Plus size={20} />
             <span className="text-sm font-medium">Link another card</span>
@@ -221,27 +220,27 @@ export default function CardIntegrationPage() {
       </div>
 
       {showAdd && (
-        <div 
-          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" 
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setShowAdd(false)
           }}
         >
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200" onMouseDown={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-200" onMouseDown={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Link Financial Account</h2>
-                <p className="text-sm text-gray-500">Securely connect using AES-256 encryption</p>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Link Financial Account</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Securely connect using AES-256 encryption</p>
               </div>
-              <button onClick={() => setShowAdd(false)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full transition">
+              <button onClick={() => setShowAdd(false)} className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {!selectedBank ? (
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider text-[10px]">Select your provider</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase tracking-wider text-[10px]">Select your provider</label>
                   <div className="grid grid-cols-2 gap-3">
                     {BANKS.map((bank) => (
                       <button
@@ -250,16 +249,15 @@ export default function CardIntegrationPage() {
                           if (bank.active) setSelectedBank(bank)
                           else showFeedback(`${bank.name} is not yet supported in your region.`, 'error')
                         }}
-                        className={`flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all group ${
-                          bank.active 
-                            ? 'border-gray-100 hover:border-emerald-500 hover:bg-emerald-50' 
-                            : 'border-gray-50 bg-gray-50/50 opacity-60 cursor-not-allowed'
-                        }`}
+                        className={`flex flex-col items-center gap-3 p-5 rounded-2xl border-2 transition-all group ${bank.active
+                            ? 'border-gray-100 dark:border-gray-700 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950'
+                            : 'border-gray-50 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 opacity-60 cursor-not-allowed'
+                          }`}
                       >
-                        <div className={`w-12 h-12 ${bank.active ? bank.color : 'bg-gray-200'} rounded-2xl flex items-center justify-center text-white transition-transform group-hover:scale-110`}>
+                        <div className={`w-12 h-12 ${bank.active ? bank.color : 'bg-gray-200 dark:bg-gray-700'} rounded-2xl flex items-center justify-center text-white transition-transform group-hover:scale-110`}>
                           <bank.icon size={24} />
                         </div>
-                        <span className="text-sm font-bold text-gray-700">{bank.name}</span>
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{bank.name}</span>
                         {!bank.active && <span className="text-[10px] text-gray-400 font-semibold uppercase">Coming Soon</span>}
                       </button>
                     ))}
@@ -267,38 +265,38 @@ export default function CardIntegrationPage() {
                 </div>
               ) : (
                 <div className="space-y-4 animate-in slide-in-from-right-4">
-                  <button 
-                    onClick={() => setSelectedBank(null)} 
+                  <button
+                    onClick={() => setSelectedBank(null)}
                     className="text-xs font-bold text-emerald-600 flex items-center gap-1 hover:underline"
                   >
                     ← Back to bank selection
                   </button>
-                  <div className="flex items-center gap-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <div className="flex items-center gap-4 p-4 bg-emerald-50 dark:bg-emerald-950 rounded-xl border border-emerald-100 dark:border-emerald-800">
                     <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white">
                       <Building2 size={20} />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">{selectedBank.name}</p>
-                      <p className="text-xs text-emerald-700">Connecting via Open Banking API</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{selectedBank.name}</p>
+                      <p className="text-xs text-emerald-700 dark:text-emerald-400">Connecting via Open Banking API</p>
                     </div>
                   </div>
 
                   {error && (
-                    <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600 flex items-center gap-2">
+                    <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
                       <AlertCircle size={16} />
                       {error}
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-wider">Card Number</label>
+                    <label className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Card Number</label>
                     <input
                       type="text"
                       autoFocus
                       value={newCard}
                       onChange={(e) => setNewCard(formatCard(e.target.value))}
                       placeholder="4111 0000 0000 0000"
-                      className="w-full px-4 py-3 text-lg border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-mono tracking-[0.2em] transition-all bg-gray-50 focus:bg-white"
+                      className="w-full px-4 py-3 text-lg border border-gray-200 dark:border-gray-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 font-mono tracking-[0.2em] transition-all bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:bg-white dark:focus:bg-gray-700"
                     />
                     <div className="mt-3 flex items-center gap-2">
                       <Shield size={12} className="text-emerald-500" />
@@ -307,7 +305,7 @@ export default function CardIntegrationPage() {
                   </div>
 
                   <div className="flex gap-3 pt-2">
-                    <button 
+                    <button
                       onClick={handleAddCard}
                       disabled={loading || newCard.replace(/\s/g, '').length !== 16}
                       className="flex-1 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
@@ -325,4 +323,3 @@ export default function CardIntegrationPage() {
     </div>
   )
 }
-

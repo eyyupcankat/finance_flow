@@ -39,7 +39,17 @@ export default function RegisterPage() {
     setError('')
     try {
       const res = await authService.register({ name: form.name, email: form.email, password: form.password })
-      login(res.data.user, res.data.token)
+      const userData = {
+        id: res.data.userId,
+        name: res.data.name,
+        email: res.data.email,
+        jobTitle: res.data.jobTitle,
+        location: res.data.location,
+        darkMode: res.data.darkMode,
+        emailAlerts: res.data.emailAlerts,
+        currency: res.data.currency
+      }
+      login(userData, res.data.token)
       navigate('/dashboard')
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.')

@@ -50,10 +50,6 @@ public class User {
     private Boolean emailAlerts = true;
 
     @Builder.Default
-    @Column(name = "desktop_notify", nullable = false, columnDefinition = "boolean default true")
-    private Boolean desktopNotify = true;
-
-    @Builder.Default
     @Column(nullable = false, columnDefinition = "varchar(20) default 'USD ($)'")
     private String currency = "USD ($)";
 

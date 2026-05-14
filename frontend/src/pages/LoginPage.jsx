@@ -46,7 +46,12 @@ export default function LoginPage() {
       const userData = {
         id: res.data.userId,
         name: res.data.name,
-        email: res.data.email
+        email: res.data.email,
+        jobTitle: res.data.jobTitle,
+        location: res.data.location,
+        darkMode: res.data.darkMode,
+        emailAlerts: res.data.emailAlerts,
+        currency: res.data.currency
       }
       login(userData, res.data.token)
       navigate('/dashboard')
