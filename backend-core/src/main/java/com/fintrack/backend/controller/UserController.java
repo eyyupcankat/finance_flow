@@ -27,4 +27,12 @@ public class UserController {
             @RequestBody UserSettingsRequest request) {
         return ResponseEntity.ok(userService.updateSettings(principal.getId(), request));
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestBody com.fintrack.backend.dto.ChangePasswordRequest request) {
+        userService.changePassword(principal.getId(), request);
+        return ResponseEntity.ok().build();
+    }
 }

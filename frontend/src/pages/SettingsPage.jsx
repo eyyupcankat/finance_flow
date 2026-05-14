@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Shield, ChevronDown, Monitor, Laptop, Loader2, LogOut } from 'lucide-react'
+import { User, Shield, ChevronDown, Monitor, Laptop, Loader2, LogOut, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { userService } from '../services/api'
@@ -33,6 +33,8 @@ export default function SettingsPage() {
   const [prefs, setPrefs] = useState({ darkMode: false, emailAlerts: true })
   const [currency, setCurrency] = useState('USD ($)')
   const [passwords, setPasswords] = useState({ current: '', next: '' })
+  const [showPasswords, setShowPasswords] = useState({ current: false, next: false })
+  const [feedback, setFeedback] = useState(null)
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -109,6 +111,35 @@ export default function SettingsPage() {
       ...prefs,
       currency: val
     })
+  }
+
+  const handleUpdatePassword = async () => {
+    if (!passwords.current || !passwords.next) {
+      setFeedback({ type: 'error', message: 'Please fill in both password fields.' })
+      setTimeout(() => setFeedback(null), 3000)
+      return
+    }
+
+    if (passwords.next.length < 6) {
+      setFeedback({ type: 'error', message: 'New password must be at least 6 characters.' })
+      setTimeout(() => setFeedback(null), 3000)
+      return
+    }
+
+    try {
+      setSaving(true)
+      await userService.changePassword({
+        currentPassword: passwords.current,
+        newPassword: passwords.next
+      })
+      setFeedback({ type: 'success', message: 'Password updated successfully!' })
+      setPasswords({ current: '', next: '' })
+    } catch (err) {
+      setFeedback({ type: 'error', message: err.response?.data?.message || 'Failed to update password' })
+    } finally {
+      setSaving(false)
+      setTimeout(() => setFeedback(null), 3000)
+    }
   }
 
   const handleProfileChange = (e) =>
@@ -252,32 +283,65 @@ export default function SettingsPage() {
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">Security & Privacy</h2>
         </div>
 
+        {feedback && (
+          <div className={`mb-6 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${
+            feedback.type === 'success' 
+              ? 'bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400' 
+              : 'bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400'
+          }`}>
+            {feedback.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+            <p className="text-sm font-medium">{feedback.message}</p>
+          </div>
+        )}
+
         <div className="grid grid-cols-3 gap-6">
           <div>
             <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Credentials</p>
             <div className="space-y-3">
               <div>
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Current Password</label>
-                <input
-                  type="password"
-                  value={passwords.current}
-                  onChange={(e) => setPasswords((p) => ({ ...p, current: e.target.value }))}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                />
+                <div className="relative">
+                  <input
+                    type={showPasswords.current ? 'text' : 'password'}
+                    value={passwords.current}
+                    onChange={(e) => setPasswords((p) => ({ ...p, current: e.target.value }))}
+                    placeholder="••••••••"
+                    className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswords(s => ({ ...s, current: !s.current }))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  >
+                    {showPasswords.current ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">New Password</label>
-                <input
-                  type="password"
-                  value={passwords.next}
-                  onChange={(e) => setPasswords((p) => ({ ...p, next: e.target.value }))}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-                />
+                <div className="relative">
+                  <input
+                    type={showPasswords.next ? 'text' : 'password'}
+                    value={passwords.next}
+                    onChange={(e) => setPasswords((p) => ({ ...p, next: e.target.value }))}
+                    placeholder="••••••••"
+                    className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswords(s => ({ ...s, next: !s.next }))}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  >
+                    {showPasswords.next ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
-              <button className="w-full py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
-                Update Password
+              <button
+                onClick={handleUpdatePassword}
+                disabled={saving}
+                className="w-full py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition disabled:opacity-50"
+              >
+                {saving ? 'Updating...' : 'Update Password'}
               </button>
             </div>
           </div>

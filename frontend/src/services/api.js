@@ -54,6 +54,7 @@ export const dashboardService = {
 export const userService = {
   getSettings: () => api.get('/user/settings'),
   updateSettings: (data) => api.put('/user/settings', data),
+  changePassword: (data) => api.post('/user/change-password', data),
 }
 
 export default api
