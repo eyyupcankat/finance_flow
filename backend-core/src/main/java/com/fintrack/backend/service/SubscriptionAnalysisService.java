@@ -27,6 +27,21 @@ public class SubscriptionAnalysisService {
     private final UserRepository userRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final UserCancellationRepository userCancellationRepository;
+    private final CurrencyConversionService currencyService;
+
+    public List<SubscriptionResponse> getSubscriptions(Long userId, com.fintrack.backend.entity.SubscriptionStatus status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
+        String targetCurrency = user.getCurrency();
+
+        List<Subscription> subs = (status != null)
+                ? subscriptionRepository.findByUserIdAndStatus(userId, status)
+                : subscriptionRepository.findByUserId(userId);
+
+        return subs.stream()
+                .map(s -> convertToResponse(s, targetCurrency))
+                .toList();
+    }
 
     public List<SubscriptionResponse> analyzeCard(Long cardId, Long userId) {
         User user = userRepository.findById(userId)
@@ -36,14 +51,15 @@ public class SubscriptionAnalysisService {
                 .orElseThrow(() -> new ResourceNotFoundException("CARD_NOT_FOUND", "Card not found for this account"));
 
         List<MockBankTransactionDto> transactions = fetchTransactions(card.getCardNumber());
+        String targetCurrency = user.getCurrency();
 
         transactions.stream()
                 .filter(t -> Boolean.TRUE.equals(t.isRecurring()))
                 .filter(t -> !subscriptionRepository.existsByCardIdAndName(cardId, t.merchant()))
                 .forEach(t -> {
-                    com.fintrack.backend.entity.SubscriptionStatus status = com.fintrack.backend.entity.SubscriptionStatus.ACTIVE;
+                    com.fintrack.backend.entity.SubscriptionStatus subStatus = com.fintrack.backend.entity.SubscriptionStatus.ACTIVE;
                     if (userCancellationRepository.existsByUserIdAndMerchantName(userId, t.merchant())) {
-                        status = com.fintrack.backend.entity.SubscriptionStatus.CANCELLED;
+                        subStatus = com.fintrack.backend.entity.SubscriptionStatus.CANCELLED;
                     }
 
                     Subscription subscription = Subscription.builder()
@@ -53,15 +69,24 @@ public class SubscriptionAnalysisService {
                             .amount(t.amount() != null ? t.amount() : BigDecimal.ZERO)
                             .currency(t.currency() != null ? t.currency() : "USD")
                             .billingCycle("MONTHLY")
-                            .status(status)
+                            .status(subStatus)
                             .build();
                     subscriptionRepository.save(subscription);
                 });
 
         return subscriptionRepository.findByCardId(cardId)
                 .stream()
-                .map(SubscriptionResponse::from)
+                .map(s -> convertToResponse(s, targetCurrency))
                 .toList();
+    }
+
+    private SubscriptionResponse convertToResponse(Subscription s, String targetCurrency) {
+        return new SubscriptionResponse(
+                s.getId(), s.getName(),
+                currencyService.convert(s.getAmount(), s.getCurrency(), targetCurrency),
+                targetCurrency,
+                s.getBillingCycle(), s.getDetectedAt(), s.getStatus(), s.getCard().getId()
+        );
     }
 
     private List<MockBankTransactionDto> fetchTransactions(String cardNumber) {

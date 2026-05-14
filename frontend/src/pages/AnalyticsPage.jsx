@@ -8,6 +8,8 @@ import {
   PieChart, Pie
 } from 'recharts'
 import { dashboardService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
+import { formatCurrency, getCurrencySymbol } from '../utils/formatters'
 
 const TABS = ['Weekly', 'Monthly', 'Yearly']
 
@@ -22,11 +24,11 @@ const CAT_COLORS = {
   Living: 'bg-amber-100 text-amber-700',
 }
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, currency }) => {
   if (active && payload?.length) {
     return (
       <div className="bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg shadow">
-        ${payload[0].value.toLocaleString()}
+        {getCurrencySymbol(currency)}{payload[0].value.toLocaleString()}
       </div>
     )
   }
@@ -34,6 +36,7 @@ const CustomTooltip = ({ active, payload }) => {
 }
 
 export default function AnalyticsPage() {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('Monthly')
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -68,7 +71,7 @@ export default function AnalyticsPage() {
       iconBg: 'bg-emerald-100 dark:bg-emerald-950',
       iconColor: 'text-emerald-600',
       label: 'Total Savings',
-      value: `$${data?.totalSavings?.toLocaleString() || '0.00'}`,
+      value: formatCurrency(data?.totalSavings, user?.currency),
       trend: data?.savingsTrend || '+0%',
       trendPositive: data?.savingsPositive
     },
@@ -77,7 +80,7 @@ export default function AnalyticsPage() {
       iconBg: 'bg-red-100 dark:bg-red-950',
       iconColor: 'text-red-500',
       label: 'Period Spending',
-      value: `$${data?.periodSpending?.toLocaleString() || '0.00'}`,
+      value: formatCurrency(data?.periodSpending, user?.currency),
       trend: data?.spendingTrend || '+0%',
       trendPositive: data?.spendingPositive
     },
@@ -86,7 +89,7 @@ export default function AnalyticsPage() {
       iconBg: 'bg-gray-100 dark:bg-gray-800',
       iconColor: 'text-gray-600 dark:text-gray-400',
       label: 'Total Assets',
-      value: `$${data?.totalAssets?.toLocaleString() || '0.00'}`,
+      value: formatCurrency(data?.totalAssets, user?.currency),
       trend: 'Snapshot',
       trendPositive: true
     },
@@ -95,7 +98,7 @@ export default function AnalyticsPage() {
       iconBg: 'bg-blue-100 dark:bg-blue-950',
       iconColor: 'text-blue-600',
       label: 'Investment Return',
-      value: `$${data?.investmentReturn?.toLocaleString() || '0.00'}`,
+      value: formatCurrency(data?.investmentReturn, user?.currency),
       trend: '+10% est.',
       trendPositive: true
     },
@@ -172,7 +175,7 @@ export default function AnalyticsPage() {
                       interval={0}
                     />
                     <YAxis hide />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                    <Tooltip content={<CustomTooltip currency={user?.currency} />} cursor={{ fill: 'transparent' }} />
                     <Bar
                       dataKey="amount"
                       radius={[4, 4, 0, 0]}
@@ -219,7 +222,7 @@ export default function AnalyticsPage() {
                 <CheckCircle2 size={18} className="text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-xs font-semibold text-gray-800 dark:text-gray-100">Saving Goal Met</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">You saved $450 more than your monthly target in June. Great job!</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">You saved {formatCurrency(450, user?.currency)} more than your monthly target in June. Great job!</p>
                 </div>
               </div>
               <div className="p-3 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-900 rounded-xl flex items-start gap-3">
@@ -263,7 +266,7 @@ export default function AnalyticsPage() {
                       </td>
                       <td className="py-3 text-xs text-gray-400 dark:text-gray-500">{tx.transactionDate}</td>
                       <td className={`py-3 text-right text-sm font-semibold ${tx.amount > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                        {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                        {formatCurrency(tx.amount, user?.currency)}
                       </td>
                     </tr>
                   ))}

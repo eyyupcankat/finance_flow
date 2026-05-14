@@ -12,8 +12,13 @@ public class MockBankWebClientConfig {
     private String mockBankApiUrl;
 
     @Bean
-    public WebClient mockBankWebClient() {
-        return WebClient.builder()
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+
+    @Bean
+    public WebClient mockBankWebClient(WebClient.Builder builder) {
+        return builder
                 .baseUrl(mockBankApiUrl)
                 .build();
     }

@@ -2,6 +2,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { Filter, Plus, MoreVertical, TrendingUp, Calendar, AlertTriangle, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { subscriptionService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
+import { formatCurrency } from '../utils/formatters'
 
 const SPENDING_DATA = [
   { month: 'May', amount: 360 },
@@ -20,6 +22,7 @@ const ICONS = {
 }
 
 export default function SubscriptionsPage() {
+  const { user } = useAuth()
   const [subs, setSubs] = useState([])
   const [openMenu, setOpenMenu] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -90,7 +93,7 @@ export default function SubscriptionsPage() {
             </div>
           </div>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Monthly Spending (Active)</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">${stats.totalMonthly.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white mt-0.5">{formatCurrency(stats.totalMonthly, user?.currency)}</p>
         </div>
         <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5">
           <div className="flex items-start justify-between mb-2">
@@ -167,7 +170,7 @@ export default function SubscriptionsPage() {
                       </td>
                       <td className="px-3 py-4 text-sm text-gray-600 dark:text-gray-400">{sub.billingCycle}</td>
                       <td className="px-5 py-4 text-right">
-                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">${sub.amount?.toFixed(2)}</p>
+                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{formatCurrency(sub.amount, user?.currency)}</p>
                         <p className="text-xs text-gray-400 dark:text-gray-500">{sub.currency}</p>
                       </td>
                       <td className="px-3 py-4 relative text-right">

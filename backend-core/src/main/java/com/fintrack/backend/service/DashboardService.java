@@ -24,6 +24,7 @@ public class DashboardService {
     private final VirtualCardRepository cardRepository;
     private final UserRepository userRepository;
     private final WebClient mockBankWebClient;
+    private final CurrencyConversionService currencyService;
 
     public List<MockBankTransactionDto> getRecentTransactions(Long userId) {
         User user = userRepository.findById(userId)
@@ -36,20 +37,30 @@ public class DashboardService {
             allTransactions.addAll(fetchTransactions(card.getCardNumber()));
         }
 
+        String targetCurrency = user.getCurrency();
+
         return allTransactions.stream()
+                .map(tx -> new MockBankTransactionDto(
+                        tx.id(), tx.cardNumber(), tx.merchant(), tx.description(),
+                        currencyService.convert(tx.amount(), tx.currency(), targetCurrency),
+                        targetCurrency,
+                        tx.transactionDate(), tx.category(), tx.isRecurring()
+                ))
                 .sorted(Comparator.comparing(MockBankTransactionDto::transactionDate).reversed())
-                .limit(100) // Return up to 100 for the frontend to paginate
+                .limit(100)
                 .toList();
     }
 
     public DashboardSummaryResponse getSummary(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
+        
         List<MockBankTransactionDto> allTransactions = getRecentTransactions(userId);
 
         BigDecimal totalBalance = BigDecimal.ZERO;
         BigDecimal monthlyIncome = BigDecimal.ZERO;
         BigDecimal monthlyExpenses = BigDecimal.ZERO;
 
-        // In a real app, we would filter by current month. For demo, we just aggregate all.
         for (MockBankTransactionDto tx : allTransactions) {
             BigDecimal amt = tx.amount() != null ? tx.amount() : BigDecimal.ZERO;
             totalBalance = totalBalance.add(amt);
@@ -60,7 +71,6 @@ public class DashboardService {
             }
         }
 
-        // Just mocking trends for the UI
         return new DashboardSummaryResponse(
                 totalBalance,
                 monthlyIncome,

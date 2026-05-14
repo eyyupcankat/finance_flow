@@ -19,15 +19,17 @@ public class SubscriptionCancellationService {
 
     private final WebClient mockBankWebClient;
     private final SubscriptionRepository subscriptionRepository;
-
     private final UserCancellationRepository userCancellationRepository;
+    private final CurrencyConversionService currencyService;
 
     public SubscriptionResponse cancelSubscription(Long subscriptionId, Long userId) {
         Subscription subscription = subscriptionRepository.findByIdAndUserId(subscriptionId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("SUBSCRIPTION_NOT_FOUND", "Subscription not found"));
 
+        String targetCurrency = subscription.getUser().getCurrency();
+
         if (subscription.getStatus() == SubscriptionStatus.CANCELLED) {
-            return SubscriptionResponse.from(subscription);
+            return convertToResponse(subscription, targetCurrency);
         }
 
         String cardNumber = subscription.getCard().getCardNumber();
@@ -50,6 +52,15 @@ public class SubscriptionCancellationService {
         }
 
         subscription.setStatus(SubscriptionStatus.CANCELLED);
-        return SubscriptionResponse.from(subscriptionRepository.save(subscription));
+        return convertToResponse(subscriptionRepository.save(subscription), targetCurrency);
+    }
+
+    private SubscriptionResponse convertToResponse(Subscription s, String targetCurrency) {
+        return new SubscriptionResponse(
+                s.getId(), s.getName(),
+                currencyService.convert(s.getAmount(), s.getCurrency(), targetCurrency),
+                targetCurrency,
+                s.getBillingCycle(), s.getDetectedAt(), s.getStatus(), s.getCard().getId()
+        );
     }
 }

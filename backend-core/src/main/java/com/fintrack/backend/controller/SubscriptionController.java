@@ -25,13 +25,8 @@ public class SubscriptionController {
     @GetMapping
     public ResponseEntity<List<SubscriptionResponse>> getSubscriptions(
             @AuthenticationPrincipal UserPrincipal principal,
-            @RequestParam(required = false) SubscriptionStatus status) {
-        List<SubscriptionResponse> result = (status != null)
-                ? subscriptionRepository.findByUserIdAndStatus(principal.getId(), status)
-                        .stream().map(SubscriptionResponse::from).toList()
-                : subscriptionRepository.findByUserId(principal.getId())
-                        .stream().map(SubscriptionResponse::from).toList();
-        return ResponseEntity.ok(result);
+            @RequestParam(required = false) com.fintrack.backend.entity.SubscriptionStatus status) {
+        return ResponseEntity.ok(analysisService.getSubscriptions(principal.getId(), status));
     }
 
     @PostMapping("/detect/{cardId}")

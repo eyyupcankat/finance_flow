@@ -5,6 +5,8 @@ import {
   MoreVertical, ChevronDown, ArrowUpRight, ArrowDownRight, Loader2, X, ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { cardService, dashboardService, subscriptionService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
+import { formatCurrency } from '../utils/formatters'
 
 const BANKS = ['Select a Bank', 'Mock National Bank', 'Virtual Finance Corp', 'Demo Credit Union']
 
@@ -38,6 +40,7 @@ function StatCard({ icon: Icon, iconBg, label, value, trend, trendLabel, trendPo
 }
 
 export default function DashboardPage() {
+  const { user } = useAuth()
   const [cardNumber, setCardNumber] = useState('')
   const [bank, setBank] = useState('Select a Bank')
   const [fetching, setFetching] = useState(false)
@@ -149,7 +152,7 @@ export default function DashboardPage() {
         <StatCard
           icon={Wallet} iconBg="bg-emerald-500"
           label="Total Balance"
-          value={`$${summary?.totalBalance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`}
+          value={formatCurrency(summary?.totalBalance, user?.currency)}
           trend={summary?.balanceTrend || "+0%"}
           trendLabel="from last month"
           trendPositive={summary?.balancePositive ?? true}
@@ -157,7 +160,7 @@ export default function DashboardPage() {
         <StatCard
           icon={TrendingDown} iconBg="bg-emerald-400"
           label="Monthly Income"
-          value={`$${summary?.monthlyIncome?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`}
+          value={formatCurrency(summary?.monthlyIncome, user?.currency)}
           trend={summary?.incomeTrend || "On track"}
           trendLabel="for goal"
           trendPositive={summary?.incomePositive ?? true}
@@ -165,7 +168,7 @@ export default function DashboardPage() {
         <StatCard
           icon={TrendingUp} iconBg="bg-red-400"
           label="Monthly Expenses"
-          value={`$${summary?.monthlyExpenses?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}`}
+          value={formatCurrency(summary?.monthlyExpenses, user?.currency)}
           trend={summary?.expenseTrend || "0%"}
           trendLabel="vs last month"
           trendPositive={summary?.expensePositive ?? false}
@@ -268,7 +271,7 @@ export default function DashboardPage() {
                       </span>
                     </td>
                     <td className={`py-3 text-right font-semibold text-sm ${tx.amount > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                      {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                      {formatCurrency(tx.amount, user?.currency)}
                     </td>
                   </tr>
                 ))}
@@ -300,7 +303,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">${sub.amount?.toFixed(2)}</p>
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">{formatCurrency(sub.amount, user?.currency)}</p>
                       <p className="text-xs text-gray-400 dark:text-gray-500">{sub.billingCycle === 'MONTHLY' ? 'Monthly' : sub.billingCycle}</p>
                     </div>
                   </div>
@@ -356,7 +359,7 @@ export default function DashboardPage() {
                         </span>
                       </td>
                       <td className={`py-4 text-right font-semibold text-sm ${tx.amount > 0 ? 'text-emerald-600' : 'text-red-500'}`}>
-                        {tx.amount > 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
+                        {formatCurrency(tx.amount, user?.currency)}
                       </td>
                     </tr>
                   ))}
