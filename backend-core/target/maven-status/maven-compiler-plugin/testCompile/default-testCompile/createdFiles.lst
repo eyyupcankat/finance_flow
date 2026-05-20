@@ -1,0 +1,9 @@
+com\fintrack\backend\controller\CardControllerTest.class
+com\fintrack\backend\controller\SubscriptionControllerTest.class
+com\fintrack\backend\service\CardServiceTest.class
+com\fintrack\backend\service\AuthServiceTest.class
+com\fintrack\backend\service\SubscriptionCancellationServiceTest.class
+com\fintrack\backend\controller\AuthControllerTest.class
+com\fintrack\backend\controller\CardControllerTest$1.class
+com\fintrack\backend\service\SubscriptionAnalysisServiceTest.class
+com\fintrack\backend\controller\SubscriptionControllerTest$1.class
