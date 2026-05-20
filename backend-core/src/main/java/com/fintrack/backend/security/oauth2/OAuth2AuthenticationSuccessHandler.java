@@ -2,6 +2,7 @@ package com.fintrack.backend.security.oauth2;
 
 import com.fintrack.backend.security.JwtUtil;
 import com.fintrack.backend.security.UserPrincipal;
+import com.fintrack.backend.service.UserSessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.io.IOException;
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
+    private final UserSessionService userSessionService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -24,6 +26,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                         Authentication authentication) throws IOException {
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         String token = jwtUtil.generateToken(principal.getId(), principal.getEmail());
+        userSessionService.createSession(principal.getId(), token);
 
         String redirectUrl = UriComponentsBuilder
                 .fromUriString("http://localhost:5173/oauth2/callback")

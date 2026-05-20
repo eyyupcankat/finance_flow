@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, Shield, ChevronDown, Monitor, Laptop, Loader2, LogOut, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { User, Shield, ChevronDown, Monitor, Laptop, Loader2, LogOut, Eye, EyeOff, AlertCircle, CheckCircle2, Smartphone } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { userService } from '../services/api'
@@ -35,13 +35,17 @@ export default function SettingsPage() {
   const [passwords, setPasswords] = useState({ current: '', next: '' })
   const [showPasswords, setShowPasswords] = useState({ current: false, next: false })
   const [feedback, setFeedback] = useState(null)
+  const [sessions, setSessions] = useState([])
 
   useEffect(() => {
     const fetchSettings = async () => {
       try {
         setLoading(true)
-        const res = await userService.getSettings()
-        const data = res.data
+        const [settingsRes, sessionsRes] = await Promise.all([
+          userService.getSettings(),
+          userService.getSessions()
+        ])
+        const data = settingsRes.data
         setProfile({
           name: data.name || '',
           email: data.email || '',
@@ -54,14 +58,43 @@ export default function SettingsPage() {
           twoFactorEnabled: data.twoFactorEnabled
         })
         setCurrency(data.currency || 'USD ($)')
+        setSessions(sessionsRes.data)
       } catch (err) {
-        console.error('Failed to fetch settings', err)
+        console.error('Failed to fetch settings/sessions', err)
       } finally {
         setLoading(false)
       }
     }
     fetchSettings()
   }, [])
+
+  const getSessionIcon = (device) => {
+    if (!device) return Monitor;
+    const dev = device.toLowerCase();
+    if (dev.includes("phone") || dev.includes("iphone") || dev.includes("android")) {
+      return Smartphone;
+    }
+    if (dev.includes("macbook") || dev.includes("laptop") || dev.includes("notebook")) {
+      return Laptop;
+    }
+    return Monitor;
+  };
+
+  const handleLogoutAllDevices = async () => {
+    try {
+      setSaving(true)
+      await userService.logoutAllDevices()
+      setFeedback({ type: 'success', message: 'Successfully logged out all devices. Re-authenticating...' })
+      setTimeout(() => {
+        logout()
+      }, 1500)
+    } catch (err) {
+      setFeedback({ type: 'error', message: 'Failed to log out devices' })
+    } finally {
+      setSaving(false)
+      setTimeout(() => setFeedback(null), 3000)
+    }
+  }
 
   const performUpdate = async (updatedData) => {
     try {
@@ -404,23 +437,34 @@ export default function SettingsPage() {
           <div>
             <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-3">Recent Activity</p>
             <div className="space-y-3">
-              {[
-                { device: 'MacBook Pro 14"', loc: 'San Francisco', time: 'Active now', Icon: Laptop },
-                { device: 'iPhone 15 Pro', loc: 'San Francisco', time: '2h ago', Icon: Monitor },
-              ].map((session, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-                    <session.Icon size={16} className="text-gray-500 dark:text-gray-400" />
+              {sessions.map((session) => {
+                const IconComponent = getSessionIcon(session.device);
+                return (
+                  <div key={session.id} className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                      <IconComponent size={16} className="text-gray-500 dark:text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-800 dark:text-gray-100">
+                        {session.device} {session.current && <span className="ml-1 text-[10px] text-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded font-semibold">Current</span>}
+                      </p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">{session.location} • {session.time}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-gray-800 dark:text-gray-100">{session.device}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500">{session.loc} • {session.time}</p>
-                  </div>
-                </div>
-              ))}
-              <button className="text-sm text-emerald-600 font-medium hover:text-emerald-700">
-                Log out all devices
-              </button>
+                );
+              })}
+              {sessions.length === 0 && (
+                <p className="text-xs text-gray-400 dark:text-gray-500">No active sessions found.</p>
+              )}
+              {sessions.length > 0 && (
+                <button
+                  onClick={handleLogoutAllDevices}
+                  disabled={saving}
+                  className="text-sm text-emerald-600 font-medium hover:text-emerald-700 disabled:opacity-50"
+                >
+                  {saving ? 'Processing...' : 'Log out all devices'}
+                </button>
+              )}
             </div>
           </div>
         </div>

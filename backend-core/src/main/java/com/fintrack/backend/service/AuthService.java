@@ -20,6 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserSessionService userSessionService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -33,6 +34,7 @@ public class AuthService {
                 .build();
         user = userRepository.save(user);
         String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        userSessionService.createSession(user.getId(), token);
         return new AuthResponse(
                 token, 
                 user.getId(), 
@@ -74,6 +76,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        userSessionService.createSession(user.getId(), token);
         return new AuthResponse(
                 token, 
                 user.getId(), 
@@ -100,6 +103,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        userSessionService.createSession(user.getId(), token);
         return new AuthResponse(
                 token, 
                 user.getId(), 

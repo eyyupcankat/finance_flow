@@ -57,6 +57,8 @@ export const userService = {
   updateSettings: (data) => api.put('/user/settings', data),
   changePassword: (data) => api.post('/user/change-password', data),
   toggle2FA: () => api.post('/user/2fa/toggle'),
+  getSessions: () => api.get('/user/sessions'),
+  logoutAllDevices: () => api.post('/user/sessions/logout-all'),
 }
 
 export default api

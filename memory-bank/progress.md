@@ -111,7 +111,7 @@
 - [x] **Settings:** Add logout button in Settings page.
 - [x] **Settings (Security):** Make "Update Password" functional (needs backend `POST /api/user/change-password` and frontend validation).
 - [x] **Settings (Security):** Make "Disable 2FA" toggle functional (needs backend endpoint).
-- [ ] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
+- [x] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
 - [ ] **Settings (Security):** Fix "Delete Forever" button so it actually deletes the account via backend instead of just logging out locally.
 - [x] **Auth:** Improve Registration error handling (e.g., gracefully showing field errors without clearing form).
 
