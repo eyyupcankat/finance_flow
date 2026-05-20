@@ -1,7 +1,27 @@
-# Environment
-.env
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
 .env.local
 .env.*.local
+
+# Logs
+*.log
+logs/
+
+# Node
+node_modules/
+.npm/
+package-lock.json
+yarn.lock
 
 # Python
 __pycache__/
@@ -28,32 +48,25 @@ wheels/
 venv/
 ENV/
 env/
-.pip-cache/
+.env
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
+# IDEs
 *.sublime-project
 *.sublime-workspace
+.vscode/
+.idea/
+
+# Build
+dist/
+build/
+.cache/
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
 
-# OS
+# Misc
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# Misc
-.pytest_cache/
-.coverage
-htmlcov/
 *.pid
