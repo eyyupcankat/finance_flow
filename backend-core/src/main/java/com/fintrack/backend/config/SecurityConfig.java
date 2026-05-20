@@ -53,6 +53,7 @@ public class SecurityConfig {
                     "/api/auth/login",
                     "/api/auth/register",
                     "/api/auth/verify-2fa",
+                    "/api/auth/oauth2/**",
                     "/error",
                     "/login/oauth2/**",
                     "/oauth2/**"
@@ -60,6 +61,9 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
+                .redirectionEndpoint(redirection -> redirection
+                    .baseUri("/api/auth/oauth2/callback/*")
+                )
                 .userInfoEndpoint(u -> u.userService(customOAuth2UserService))
                 .successHandler(oAuth2SuccessHandler)
             )

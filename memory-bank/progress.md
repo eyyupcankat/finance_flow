@@ -114,6 +114,11 @@
 - [x] **Settings (Security):** Fetch "Active Sessions" from backend instead of hardcoded MacBook/iPhone data, and activate "Log out all devices".
 - [x] **Settings (Security):** Fix "Delete Forever" button so it actually deletes the account via backend instead of just logging out locally.
 - [x] **Auth:** Improve Registration error handling (e.g., gracefully showing field errors without clearing form).
+- [x] **Auth (OAuth2):** Fix Google OAuth2 redirect flow (implement callback route `/oauth2/callback` on frontend, parse JWT token, sync settings, and configure redirection endpoint in Spring Security).
+- [x] **Auth (OAuth2):** Remove GitHub login option from both Login and Register views as requested.
+- [ ] **Subscriptions (UX):** Subscriptions page imports chart components and mock monthly spending data but doesn't render the chart in the UI.
+- [ ] **Upgrade Plan (UX):** Upgrade page Standard plan card is missing dark mode CSS variables/classes (causing design inconsistencies in Dark Mode), and the "Upgrade to Pro" button lacks any mock action.
+- [ ] **Analytics (UX):** The "Smart Insights" tips section on the Analytics page is currently hardcoded on the frontend.
 
 <!-- Test Sonuçları (Yorum Satırı) -->
 ### Auth Testing Issues (Browser Subagent Tespitleri) - ÇÖZÜLDÜ ✅
