@@ -71,5 +71,9 @@ build/
 Thumbs.db
 *.pid
 
-#memory-bank
+# Memory Bank Klasörleri
+memory-bank/
 .memory-bank/
+
+# Özel Markdown Dosyaları
+AGENTS.md
