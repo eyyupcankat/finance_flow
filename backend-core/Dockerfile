@@ -1,11 +1,11 @@
 # 1. Aşama: Maven ile projeyi derle
-FROM maven:3.9.6-eclipse-temurin-25 AS build
+FROM maven:3-eclipse-temurin-25 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# 2. Aşama: Sadece derlenen jar dosyasını alıp çalıştır (daha hafif olması için)
+# 2. Aşama: Sadece derlenen jar dosyasını alıp çalıştır
 FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
