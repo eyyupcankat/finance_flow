@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Lock, User, Eye, EyeOff, Shield, TrendingUp } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { authService } from '../services/api'
+import { authService, API_BASE } from '../services/api'
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="w-4 h-4">
@@ -59,7 +59,7 @@ export default function RegisterPage() {
   }
 
   const handleOAuth = (provider) => {
-    window.location.href = `http://localhost:8080/api/auth/oauth2/${provider}`
+    window.location.href = `${API_BASE}/api/auth/oauth2/${provider}`
   }
 
   return (

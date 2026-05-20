@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: `${API_BASE}/api`,
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000, // 10 seconds timeout
 })
@@ -62,4 +64,5 @@ export const userService = {
   deleteAccount: () => api.delete('/user'),
 }
 
+export { API_BASE }
 export default api
