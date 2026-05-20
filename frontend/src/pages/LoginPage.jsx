@@ -48,7 +48,7 @@ export default function LoginPage() {
       console.log('Attempting login for:', email)
       const res = await authService.login({ email, password })
       console.log('Login response:', res.data)
-      
+
       if (res.data.mfaRequired) {
         console.log('MFA required, switching UI')
         setMfaRequired(true)
@@ -89,7 +89,7 @@ export default function LoginPage() {
         code: mfaCode
       })
       console.log('MFA verification response:', res.data)
-      
+
       const userData = {
         id: res.data.userId,
         name: res.data.name,
@@ -113,7 +113,7 @@ export default function LoginPage() {
   }
 
   const handleOAuth = (provider) => {
-    window.location.href = `${API_BASE}/api/auth/oauth2/${provider}`
+    window.location.href = `${API_BASE}/oauth2/authorization/google`
   }
 
   return (
