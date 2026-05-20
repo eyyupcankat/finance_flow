@@ -57,4 +57,10 @@ public class UserController {
         userSessionService.logoutAllDevices(principal.getId());
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal UserPrincipal principal) {
+        userService.deleteAccount(principal.getId());
+        return ResponseEntity.ok().build();
+    }
 }

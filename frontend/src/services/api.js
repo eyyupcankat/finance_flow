@@ -59,6 +59,7 @@ export const userService = {
   toggle2FA: () => api.post('/user/2fa/toggle'),
   getSessions: () => api.get('/user/sessions'),
   logoutAllDevices: () => api.post('/user/sessions/logout-all'),
+  deleteAccount: () => api.delete('/user'),
 }
 
 export default api

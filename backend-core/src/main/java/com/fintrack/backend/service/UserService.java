@@ -65,4 +65,11 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
     }
+
+    @Transactional
+    public void deleteAccount(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("USER_NOT_FOUND", "User not found"));
+        userRepository.delete(user);
+    }
 }

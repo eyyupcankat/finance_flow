@@ -197,6 +197,21 @@ export default function SettingsPage() {
   const handleProfileChange = (e) =>
     setProfile((prev) => ({ ...prev, [e.target.name]: e.target.value }))
 
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to permanently delete your account? All your linked cards, transactions, and detected subscriptions will be lost forever. This action cannot be undone.")) {
+      try {
+        setSaving(true)
+        await userService.deleteAccount()
+        logout()
+      } catch (err) {
+        setFeedback({ type: 'error', message: 'Failed to delete account. Please try again.' })
+      } finally {
+        setSaving(false)
+        setTimeout(() => setFeedback(null), 3000)
+      }
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex h-[400px] items-center justify-center">
@@ -479,9 +494,11 @@ export default function SettingsPage() {
             </p>
           </div>
           <button
-            onClick={logout}
-            className="border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 text-xs font-semibold px-4 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition whitespace-nowrap"
+            onClick={handleDeleteAccount}
+            disabled={saving}
+            className="border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 text-xs font-semibold px-4 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 transition whitespace-nowrap disabled:opacity-50 flex items-center gap-1.5"
           >
+            {saving && <Loader2 size={12} className="animate-spin" />}
             Delete Forever
           </button>
         </div>
