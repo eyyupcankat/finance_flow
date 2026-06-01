@@ -20,7 +20,7 @@ export default function Sidebar() {
           <TrendingUp size={18} className="text-white" />
         </div>
         <div>
-          <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">FinTrack</p>
+          <p className="text-sm font-bold text-gray-900 dark:text-white leading-none">FinanceFlow</p>
           <p className="text-[10px] text-gray-400 dark:text-gray-500 uppercase tracking-widest mt-0.5">Modern Analytics</p>
         </div>
       </div>
