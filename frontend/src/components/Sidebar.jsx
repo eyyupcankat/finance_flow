@@ -44,7 +44,7 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-3">
-        <div className="bg-emerald-500 rounded-xl p-4 text-white">
+        <div className="bg-red-500 rounded-xl p-4 text-white">
           <p className="text-[11px] font-medium opacity-75">Power User</p>
           <p className="text-sm font-bold mt-0.5">Upgrade Pro</p>
           <NavLink
